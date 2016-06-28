@@ -1,0 +1,7 @@
+/node_modules
+/.tmp
+/.sass-cache
+.sublime-project
+/*.sublime-workspace
+/*.sublime-project
+/dist/static
