@@ -37,11 +37,8 @@ module.exports = {
       {
         test: /\.html$/,
         loader: 'file?name=[name].[ext]'
-      },
+      },{test: /\.(jpg|png)$/, loader: "url?limit=8192"}
     ],
-  },
-  resolve: {
-    extensions: ['', '.js', '.jsx'],
   },
   devtool: 'cheap-module-eval-source-map',
 };

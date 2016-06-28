@@ -1,0 +1,198 @@
+body{
+padding:0px;
+margin:0px; 
+}
+.flowmap{
+    background-image:url(../images/bg_grid.jpg);
+    position:relative;
+    -webkit-user-select: none;
+  /*  position:absolute;
+    left:200px;
+    top:100px;
+   */
+   
+   .headMenu{
+        position: absolute;
+        display: block;
+        top: 0px;
+        right: 8px;
+        height: 52px;
+        width: 45px;
+        list-style: none;
+        padding: 0px;
+        margin: 0px;
+        margin-top: 4px;
+        li{ 
+            padding:0px;
+            float:left;
+            width: 45px;
+            height: 52px;
+            background-size:100%;
+            background-repeat:no-repeat;
+        }
+        li:hover{
+           background-color:#C7BBBB;
+        }
+        li:nth-child(1){
+            background-image:url(../images/xinjian.png);
+            background-size:auto;
+            background-position-x: 1px;
+        }
+   }
+   
+   .nodeMenu{
+        position: absolute;
+        display:none;
+        top: 100px;
+        left: 100px;
+        list-style:none;
+        background-color:#eee;
+        padding:0px;
+        box-shadow: 0 0 12px #999999;
+        height:25px;
+        margin:0px;
+        margin-top:5px;
+        li{ 
+            padding:0px;
+            float:left;
+            width: 25px;
+            height: 25px;
+            background-repeat:no-repeat;
+            background-size:auto;
+            background-position:center;
+        }
+        li:hover{
+           background-color:#C7BBBB;
+        }
+        li:nth-child(1){
+            background-image:url(../images/icon3.png);
+            
+        }
+        li:nth-child(2){
+            background-image:url(../images/icon4.png);
+            
+        }
+        li:nth-child(3),li:nth-child(4),li:nth-child(5),li:nth-child(6){
+            display:none;
+        }
+        li:nth-child(3){
+            background-image:url(../images/icon1.png);
+            
+        }
+        li:nth-child(4){
+            background-image:url(../images/icon_1.png);
+            
+        }
+        li:nth-child(5){
+            background-image:url(../images/icon2.png);
+            
+        }
+        li:nth-child(6){
+            background-image:url(../images/icon_2.png);
+            
+        }
+   }
+   .nodeMenu.more{
+       li:nth-child(3),li:nth-child(4),li:nth-child(5),li:nth-child(6){
+            display:block;
+        }
+   }
+   .nodeMenu.active{
+       display:inline-block;
+   }
+   
+   .addModelMask{
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background-color: rgba(156, 146, 146, 0.64);
+        top: 0px;
+        left: 0px;
+        display:none;
+   }
+   .addModelMask.active{
+        display:block;
+   }
+   
+   .addModel{
+        top:0px;
+        left:0px;
+        right:0px;
+        bottom:0px;
+        position: absolute;
+        width: 300px;
+        height:120px;
+        padding:10px;
+        border: 1px solid #666;
+        margin: auto;
+        z-index: 100;
+        display:none;
+        box-shadow: 0px 0px 10px #30383A;
+        background-color:#eee;
+        border-radius: 3px;
+        -webkit-user-select: none;
+        input{
+            width:100%;
+            border-radius: 5px;
+            border:1px solid #666;
+        }
+        label{
+            width:100%;
+            text-align:center;
+            padding-right:5px;
+        }
+        button{
+               width: 80px;
+                position: absolute;
+                border-radius: 5px;
+                border: 1px solid #666;
+        }
+        button.submit{
+           right:10px;
+           background-color:#337ab5;
+           color:white;
+        }
+   }
+   .addModel.active{
+       width:200px;
+       display:block;
+   }
+   .addBXModel,.addCSModel{
+       height:430px;
+       input{
+            width:100%;
+       }
+       .list-group{
+           max-height:300px;
+           overflow:auto;
+           input{
+               width:50px;
+           }
+       }
+   }
+   .addBXModel.active,.addCSModel.active{
+       width:400px;
+   }
+   .comfirmCSModel{
+       height: 160px;
+       width: 300px!important;
+       .radioContainor{
+           text-align:center;
+       }
+       input[type=radio]{
+           width: 20px;
+       }
+   }
+
+   .item-tip{
+           position: absolute;
+            background-color: rgb(255, 255, 243);
+            border: 1px solid #171717;
+            color: #666;
+            font-size: 12px;
+            padding-left: 2px;
+            padding-right: 2px;
+            padding-top: 1px;
+            padding-bottom: 1px;
+   }
+}
