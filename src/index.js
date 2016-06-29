@@ -86,7 +86,7 @@ export default class FlowMap extends React.Component{
     
     nodeMenuHandle(i,event){
         if(i==0){
-            this.addActiveArrow()
+            this.addActiveArrow(event)
             
         }else if(i==1){
             this.deleteNode()
@@ -179,7 +179,7 @@ export default class FlowMap extends React.Component{
         }.bind(this))
     }
     
-    addActiveArrow(){
+    addActiveArrow(event){
         this.disableToolbar()
         this.status.activeArrow=this.addArrow(this.status.activeNode,{
             position:[event.clientX-25,event.clientY]

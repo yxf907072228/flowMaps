@@ -1,13 +1,13 @@
 {
   "name": "flowMap",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "flowMap",
   "scripts": {
     "build": "webpack"
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/yxf907072228/flowMap.git"
   },
   "dependencies": {
     "zrender":"^2.0.2",
