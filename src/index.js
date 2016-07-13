@@ -5,7 +5,7 @@ import ImageShape from 'zrender/src/shape/Image'
 import PathShape from 'zrender/src/shape/Path'
 import LineShape from 'zrender/src/shape/Line'
 import ReactShape from 'zrender/src/shape/Rectangle'
-
+import tplRender from './jsx/index.jsx'
 
 
 export default class FlowMap extends React.Component{
@@ -53,6 +53,30 @@ export default class FlowMap extends React.Component{
         }.bind(this),100)
     }
     
+    render(){
+        return tplRender.bind(this)()
+    }
+    
+    rightMenuHandle(e){
+    	e.preventDefault()
+    	const flowmap=this.refs.flowmap,rightmenu=this.refs.rightmenu.refs.rightmenu
+    	let left=e.clientX,top=e.clientY
+    	if(left>this.refs.flowmap.offsetWidth+this.refs.flowmap.offsetLeft-rightmenu.offsetWidth){
+    		left=this.refs.flowmap.offsetWidth+this.refs.flowmap.offsetLeft-rightmenu.offsetWidth
+    		
+    	}
+    	if(top>this.refs.flowmap.offsetHeight+this.refs.flowmap.offsetTop-rightmenu.offsetHeight){
+    		top=this.refs.flowmap.offsetHeight+this.refs.flowmap.offsetTop-rightmenu.offsetHeight
+    	}
+    	this.refs.rightmenu.showMenu({
+    		left
+    	   ,top
+    	})
+    	//console.log(e.clientX,e.clientY)
+    }
+    onFlowMapClickHandle(){
+    	this.refs.rightmenu.hideMenu()
+    }
     clearPaper(){
         this.zr.clear()
         
@@ -592,7 +616,7 @@ export default class FlowMap extends React.Component{
     refreshFillStyle(){
         this.setState({
             mapWidth:window.innerWidth  
-           ,mapHeight:window.innerHeight   
+           ,mapHeight:window.innerHeight-46 
         })
         this.paperTop=this.getTop(this.refs.paper)
         this.paperLeft=this.getLeft(this.refs.paper)
