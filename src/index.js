@@ -1,5 +1,4 @@
 import React from 'react'
-import {NODE_TYPES,NODE_INFO,NODE_TYPES_LENGTH} from './FLOW_MAP_DATA'
 import zrender from 'zrender/src/zrender'
 import ImageShape from 'zrender/src/shape/Image'
 import PathShape from 'zrender/src/shape/Path'
@@ -16,22 +15,17 @@ export default class FlowMap extends React.Component{
         this.state={
             mapWidth:1000
            ,mapHeight:1000
-           ,nodeMenuHandle:this.nodeMenuHandle
-           ,toolItemTipX:0
-           ,toolItemTipY:0
-           ,toolItemTipShow:false
-           ,toolItemTipText:''
+        //   ,nodeMenuHandle:this.nodeMenuHandle
+           
+           ,config:this.props.config
         }
         this.status={
-            dropToolItem:null
-           ,activeNode:null
+            activeNode:null
            ,arrowTargetNode:null
            ,activeArrow:null
            ,dragging:false
-           ,draggingToolbar:false
-           
         }
-        this.toolbarItems=[]
+
         this.nodes={
             
         }
@@ -44,7 +38,6 @@ export default class FlowMap extends React.Component{
        
 		window.addEventListener("resize", this.refreshFillStyle.bind(this))
         this._initPaper()
-        this._initToolbar()
        // this._initMap()
         this.paperTop=this.getTop(this.refs.paper)
         this.paperLeft=this.getLeft(this.refs.paper)
@@ -74,6 +67,66 @@ export default class FlowMap extends React.Component{
     	})
     	//console.log(e.clientX,e.clientY)
     }
+
+    disableDrag(node){
+        if(node){
+            node.draggable=false
+        }else{
+            const nodes=this.nodes
+            for(let key in nodes){
+                nodes[key].draggable=false
+            }
+        }
+    }
+
+    enableDrag(node){
+        if(node){
+            node.draggable=true
+        }else{
+            const nodes=this.nodes
+            for(let key in nodes){
+                nodes[key].draggable=true
+            }
+        }
+    }    
+
+    selectToolbarBtnHandle(key){
+        const {activeBtn}=this.refs.toolbar.state
+        switch(key){
+            case 'default':
+                if(activeBtn==key){
+                    return
+                }else{
+                    this.enableDrag()
+                }
+            ;break;
+            default:
+                this.disableDrag()
+            ;break;
+        }
+    }
+
+    rightMenuClickHandle(index,o,e){
+        const {left,top}=this.refs.rightmenu.state
+		switch(index){
+			case 'addGroup':
+				//创建组相关操作
+			;break
+			case 'addNode':
+				//创建节点相关操作
+				if(e){
+					this.createNode(o.type,left-25,top-25)
+				}
+			;break;
+            case 'addArrow':
+                this.addActiveArrow(o)
+            ;break;
+			default:;
+		}
+		
+		
+	}
+
     onFlowMapClickHandle(){
     	this.refs.rightmenu.hideMenu()
     }
@@ -81,33 +134,22 @@ export default class FlowMap extends React.Component{
         this.zr.clear()
         
         this.status={
-            dropToolItem:null
-           ,activeNode:null
+            activeNode:null
            ,arrowTargetNode:null
            ,activeArrow:null
            ,dragging:false
-           ,draggingToolbar:false
-           
         }
-        this.setState({
-            toolItemTipX:0
-           ,toolItemTipY:0
-           ,toolItemTipShow:false
-           ,toolItemTipText:''
-        })
-        this.toolbarItems=[]
         this.nodes={
             
         }
         this.arrows={
             
         }
-        this._initToolbar()
-        this.refs.nodemenu.setState({
+      /*  this.refs.nodemenu.setState({
                     show:false
-        })
+        })*/
     }
-    
+    /*
     nodeMenuHandle(i,event){
         if(i==0){
             this.addActiveArrow(event)
@@ -118,7 +160,7 @@ export default class FlowMap extends React.Component{
         this.refs.nodemenu.setState({
                     show:false
         })
-    }
+    }*/
     
     //获取元素的纵坐标 
     getTop(e){ 
@@ -152,9 +194,8 @@ export default class FlowMap extends React.Component{
         arrowTargetNode['_sourceNodes'][activeNode.id]=true
                             
         
-        this.status.arrowTargetNode.style.shadowBlur=0
-        this.status.activeNode=null
-        this.status.arrowTargetNode=null
+       // this.status.arrowTargetNode.style.shadowBlur=0
+        this.setActiveNode(null)
         this.zr.refresh()
         return this.arrows[arrow['id']]
     }
@@ -163,20 +204,18 @@ export default class FlowMap extends React.Component{
         let _this=this
         this.zr = zrender.init(this.refs.paper)
         this.zr.on("mouseup",function(e){
-            if(this.status.dropToolItem&&(((this.toolbox.position[0]+this.toolbox.style.width)<e['event'].offsetX)||((this.toolbox.position[1]+this.toolbox.style.height)<e['event'].offsetY))){
-                this.createNode(this.status.dropToolItem,e['event'].offsetX,e['event'].offsetY);
-            }else if(this.status.activeArrow){
+            if(this.status.activeArrow){
                 this.delActiveArrow()
                 if(this.status.arrowTargetNode){
                     this.createArrow()
                 }
             }
         }.bind(this))
-        this.zr.on("click",function(e){
+       /* this.zr.on("click",function(e){
             this.refs.nodemenu.setState({
                  show:false
             })
-        }.bind(this))
+        }.bind(this))*/
         this.zr.on("mousemove",function(e){
             if(this.status.activeArrow){
                 this.refreshArrowPosition(this.status.activeArrow,this.status.activeNode,{
@@ -204,7 +243,6 @@ export default class FlowMap extends React.Component{
     }
     
     addActiveArrow(event){
-        this.disableToolbar()
         this.status.activeArrow=this.addArrow(this.status.activeNode,{
             position:[event.clientX-25,event.clientY]
             ,style:{
@@ -216,122 +254,10 @@ export default class FlowMap extends React.Component{
     }
     
     delActiveArrow(){
-        this.enableToolbar()
         this.zr.delShape(this.status.activeArrow['line'])
         this.zr.delShape(this.status.activeArrow['arrow'])
         this.status.activeArrow=null
         this.zr.refresh()
-    }
-    
-    disableToolbar(index){
-        let items=this.toolbarItems
-        if(index!==undefined){
-            items[index].draggable=false
-            items[index].style.image=NODE_TYPES[items[index]['_type']]['icon_no']
-        }else{
-            for(let i=0,_len=items.length;i<_len;i++){
-                items[i].draggable=false
-                items[i].style.image=NODE_TYPES[items[i]['_type']]['icon_no']
-            }
-        }
-        this.zr.render()
-    }
-    
-    enableToolbar(index){
-        let items=this.toolbarItems
-        if(index!==undefined){
-            items[index].draggable=true
-            items[index].style.image=NODE_TYPES[items[index]['_type']]['icon']
-        }else{
-            for(let i=0,_len=items.length;i<_len;i++){
-                items[i].draggable=true
-                items[i].style.image=NODE_TYPES[items[i]['_type']]['icon']
-            }
-        }
-        this.zr.render()
-    }
-    _initToolbar(){
-        let x=0,y=0,padding=8,index=0,wsize=NODE_INFO['width'],hsize=NODE_INFO['height']
-        this.toolbox=new ReactShape({
-            position:[x,y],
-            style: {
-                x:0,y:0,
-                width: NODE_TYPES_LENGTH*wsize+padding*5,
-                height:hsize+padding*2,
-                color:'rgba(255, 0, 0, 0)',
-               // shadowBlur:4,
-               // shadowColor:'#999'
-            },
-            hoverable:false
-        })
-        this.zr.addShape(this.toolbox)
-        for(let key in NODE_TYPES){
-           this._addToolbarItem(index++,key)
-        }
-        
-        this.zr.render()
-    }
-    
-    
-
-    _addToolbarItem(index,key){
-        let _this=this
-        let x=0,y=0,padding=8,wsize=NODE_INFO['width'],hsize=NODE_INFO['height']
-        let item=NODE_TYPES[key]
-        let toolItem=new ImageShape({
-                _type:key,            
-                position: [10+padding*index+wsize*index, y+padding],
-                scale: [1, 1],
-                style: {
-                    x:0,y:0,
-                    image: item['icon'],
-                    width: wsize,
-                    height:hsize,
-                    //  text:key+'节点',
-                    //  textPosition:'right'
-                },
-                draggable: true,
-               // clickable:true,
-                ondragstart:function(){
-                  _this.refs.nodemenu.setState({
-                            show:false
-                  })
-                  _this.status.draggingToolbar=true
-                  _this.status.dropToolItem=key
-                  toolItem.style=Object.assign(toolItem.style,{
-                      opacity:0.5
-                     ,width:NODE_INFO['width']
-                     ,height:NODE_INFO['height']
-                  })
-                 // _this.toolbarItems.split(index,1)
-                  _this._addToolbarItem(index,key)
-                }
-                ,ondragend:function(){
-                   _this.status.dropToolItem=null
-                    _this.zr.delShape(toolItem)
-                    _this.zr.refresh()
-                    _this.status.draggingToolbar=false
-                }
-                ,onmouseover:function(e){
-                   // console.log("在图标上",e.event.pageX,pageY)
-                    _this.setState({
-                         toolItemTipX:e.event.pageX-_this.paperLeft+20
-                        ,toolItemTipY:e.event.pageY-_this.paperTop+15
-                        ,toolItemTipShow:true
-                        ,toolItemTipText:NODE_TYPES[e.target._type].title
-                    })
-                }
-                ,onmouseout:function(e){
-//console.log("离开了图标",e)
-                    _this.setState({
-                         toolItemTipShow:false
-                        ,toolItemTipText:''
-                    })
-                }
-        })
-        this.zr.addShape(toolItem);
-        this.toolbarItems[index]=toolItem
-        return toolItem;
     }
     
     _initMap(){
@@ -372,41 +298,44 @@ export default class FlowMap extends React.Component{
             this.zr.refresh()
             delete this.nodes[node['id']]
             if(delNode==null){
+                this.status.activeNode.style.shadowBlur=0
                 this.status.activeNode=null
             }
-            this.refs.nodemenu.setState({
+            /*this.refs.nodemenu.setState({
                     show:false
-            })
+            })*/
         }
     }
     
     createNode(type,x,y){
-       return  this.addNode(type,x,y)
+       return  this.addNode(type,x-this.refs.paper.offsetLeft,y-this.refs.paper.offsetTop)
         
     }
     
     mouseOverActiveNode(node){
-        if(this.status.dragging||this.status.draggingToolbar){
+        if(this.status.dragging){
             return
         }
+
         if(this.status.activeArrow){
             if(this.isAddConnection(node)){
-            this.status.arrowTargetNode=node
-            node.style.shadowBlur=10
-            this.zr.refresh()
+                this.status.arrowTargetNode=node
+                node.style.shadowBlur=10
+                this.zr.refresh()
             }
             return
         }
-        
+        /*
         this.refs.nodemenu.setState({
             show:true
             ,top:node['position'][1]+node.style.height
             ,left:node['position'][0]
-        })
-        this.status.activeNode=node
+        })*/
+        this.setActiveNode(node)
     }
     
     addNode(type,x,y){
+             let {NODE_TYPES ,NODE_INFO} = this.state.config
              var node=new ImageShape({
                 position: [x, y],
                     scale: [1, 1],
@@ -421,7 +350,7 @@ export default class FlowMap extends React.Component{
                         lineWidth:5,
                         shadowBlur:0
                        ,shadowColor:'yellow'
-                       ,text:''
+                       ,text: NODE_TYPES[type]['title']
                        ,textColor:'#666'
                        ,textPosition:'bottom'
                        ,textFont:'bold 10px verdana'
@@ -442,9 +371,9 @@ export default class FlowMap extends React.Component{
                        this.mouseOverActiveNode(node)
                    }.bind(this)
                    ,ondragstart:function(){
-                        this.refs.nodemenu.setState({
+                     /* this.refs.nodemenu.setState({
                             show:false
-                        })
+                        })*/
                         this.status.dragging=true
                    }.bind(this)
                    ,ondragend:function(){
@@ -467,10 +396,25 @@ export default class FlowMap extends React.Component{
             })
             this.nodes[node['id']]=node
             this.zr.addShape(node);
-            this.zr.render()
+            this.setActiveNode(node)
             return node
     }
     
+    setActiveNode(node){
+        if(node==null){
+            this.status.activeNode.style.shadowBlur=0
+            this.status.activeNode=null
+            this.zr.render()
+            return
+        }else if(this.status.activeNode&&this.status.activeNode.id!=node.id){
+            this.status.activeNode.style.shadowBlur=0
+        }else if(this.status.activeNode&&this.status.activeNode.id==node.id){
+            return
+        }
+        node.style.shadowBlur=10
+        this.status.activeNode=node
+        this.zr.render()
+    }
     
     isAddConnection(node){
         return this.status.activeNode.id!==node.id&&this.status.activeNode._targetNodes[node.id]!=true

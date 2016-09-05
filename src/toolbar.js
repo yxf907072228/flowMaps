@@ -14,9 +14,11 @@ export default class ToolBar extends React.Component{
 	}
 	
 	onSelectBtnHandle(activeBtn){
+		const {selectBtnHandle}=this.props
 		this.setState({
 			activeBtn
 		})
+		selectBtnHandle&&selectBtnHandle(activeBtn)
 		this.onBtnClickHandle(activeBtn)
 	}
 	

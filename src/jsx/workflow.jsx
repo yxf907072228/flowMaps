@@ -17,7 +17,7 @@ export default function render(){
                 
             </div>
             <div className="item-tip" style={{top:toolItemTipY,left:toolItemTipX,display:toolItemTipShow?'block':'none'}}>{toolItemTipText}</div>
-            <NodeMenu ref="nodemenu" menuClickHandle={nodeMenuHandle.bind(this)}></NodeMenu>
+           {/*<NodeMenu ref="nodemenu" menuClickHandle={nodeMenuHandle.bind(this)}></NodeMenu>*/}
             <HeadMenu ref='headmenu' headMenuHandle={this.headMenuHandle.bind(this)}></HeadMenu>
             
         </div>

@@ -380,9 +380,9 @@ getZuZhi(){
             
         }
         this._initToolbar()
-        this.refs.nodemenu.setState({
+       /* this.refs.nodemenu.setState({
                     show:false
-        })
+        })*/
         this.switchZuZhiIcon()
     }
     drawWorkFlow(rootGroup){

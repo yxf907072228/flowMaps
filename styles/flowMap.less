@@ -228,9 +228,20 @@ margin:0px;
             padding-left:20px;
             color: #333;
             cursor: pointer;
+            position:relative;
         }
         li:hover{
             background-color: #ebebeb;
+        }
+        
+        .rightMenuChild{
+            top:-3px;
+            left:165px;
+        }
+        .active{
+            .rightMenuChild{
+                display:block;
+            }
         }
    }
    .rightMenu.active{

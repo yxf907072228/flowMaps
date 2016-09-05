@@ -12,21 +12,24 @@ import chaosuan from '../images/chaosuan.png'
 import chaosuan_false from '../images/chaosuan_false.png'
 import chaosuan_no from '../images/chaosuan_no.png'
 
+export const MENU_TYPES=[
+    {key:"addGroup",title:"新建组"}
+   ,{key:"addNode",title:"新建节点"}
+   ,{key:"addArrow",title:"连接"}
+   ,{key:3,title:"清空画布"}
+   ,{key:4,title:"放大"}
+   ,{key:5,title:"缩小"}
+   ,{key:6,title:"1:1"}
+]
  
 export const NODE_TYPES={
-    zuzhi:{icon:zuzhi,icon_no:zuzhi_no,level:1,title:'创建组织'},
-    zzuzhi:{icon:zizuzhi,icon_no:zizuzhi_no,level:2,title:'创建子组织'},
-    bx:{
-     icon:para
-    ,icon_no:para_no
-    ,icon_admin:guanli
-    ,icon_pay:money
-    ,icon_pay_admin:user
-    ,level:3,title:'选择并行账号'},
+    zuzhi:{icon:zuzhi,level:1,title:'节点一'},
+    zzuzhi:{icon:zizuzhi,level:2,title:'节点二'},
+    bx:{icon:para ,level:3,title:'节点三'},
     cs:{
      icon:chaosuan
     ,icon_false:chaosuan_false
-    ,icon_no:chaosuan_no,level:4,title:'创建超算'}
+    ,icon_no:chaosuan_no,level:4,title:'节点四'}
 }
 export const NODE_TYPES_LENGTH=4
 
