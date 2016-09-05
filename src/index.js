@@ -182,6 +182,9 @@ export default class FlowMap extends React.Component{
     doArrow(s,t){
         let activeNode=s||this.status.activeNode
         ,arrowTargetNode=t||this.status.arrowTargetNode
+        if(activeNode.id==arrowTargetNode.id){
+            return;
+        }
         let arrow=this.addArrow(activeNode,arrowTargetNode)
         this.arrows[arrow['id']]={
              arrow:arrow
