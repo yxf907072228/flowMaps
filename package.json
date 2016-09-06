@@ -1,6 +1,6 @@
 {
   "name": "flowMap",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "author": "yxf907072228",
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "prepublish": "npm run build",
     "build-demo": "webpack"
   },
-
+  "main": "lib/index.js",
   "dependencies": {
     
   },
