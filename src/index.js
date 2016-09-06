@@ -123,8 +123,8 @@ export default class FlowMap extends React.Component{
             ;break;
 			default:;
 		}
-		
-		
+
+		this.zr.handler._lastDownButton= null //右键菜单已经被重写了，防止源码里面对右键的锁定措施
 	}
 
     onFlowMapClickHandle(){
@@ -214,11 +214,9 @@ export default class FlowMap extends React.Component{
                 }
             }
         }.bind(this))
-       /* this.zr.on("click",function(e){
-            this.refs.nodemenu.setState({
-                 show:false
-            })
-        }.bind(this))*/
+        this.zr.on("click",function(e){
+           // console.log("!!!!!!!!!!!!!!!!!!!!!")
+        }.bind(this))
         this.zr.on("mousemove",function(e){
             if(this.status.activeArrow){
                 this.refreshArrowPosition(this.status.activeArrow,this.status.activeNode,{
@@ -381,6 +379,9 @@ export default class FlowMap extends React.Component{
                    }.bind(this)
                    ,ondragend:function(){
                         this.status.dragging=false
+                   }.bind(this)
+                   ,onmousedown:function(){
+                     //  console.log(this.zr.handler)
                    }.bind(this)
                    ,onmouseout:function(){
                        if(this.status.activeArrow&&this.status.activeNode.id!==node.id){

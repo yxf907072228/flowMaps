@@ -31,7 +31,7 @@ export default function render(){
                             </ul>
                         </li>
                     }else if(item.key=='addNode'){
-                         return <li key={i} className={classNames({active:indexItem==item.key})} onClick={menuHandle.bind(this,item.key)}  onMouseOver={this.menuItemActiveHandle.bind(this,item.key)}>
+                         return <li key={i} className={classNames({active:indexItem==item.key})} onClick={menuHandle.bind(this)}  onMouseOver={this.menuItemActiveHandle.bind(this,item.key)}>
                             新建节点
                             <ul className={classNames({'rightMenu':true,'rightMenuChild':true})}>
                                 {getNodeTypes.call(this,nodeTypes)}
