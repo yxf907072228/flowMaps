@@ -1,5 +1,5 @@
 import React from 'react'
-import tplRender from './jsx/rightmenu.jsx'
+import tplRender from './jsx/rightmenu.js'
 
 export default class RightMenu extends React.Component{
 	

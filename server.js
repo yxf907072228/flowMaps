@@ -10,11 +10,6 @@ var port = 3000
 var compiler = webpack(config)
 app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output.publicPath }))
 app.use(webpackHotMiddleware(compiler))
-app.use('/images', express.static('/images'))
-app.use('/mock_data', function(req, res) {
-    var url = req.url.split('?')[0]
-    res.sendFile(__dirname + '/mock_data' + url + '.json')
-})
 
 app.use(function(req, res) {
     res.sendFile(__dirname + '/demos/index.html')

@@ -1,5 +1,5 @@
 import React from 'react';
-import tplRender from './jsx/toolbar.jsx'
+import tplRender from './jsx/toolbar.js'
 export default class ToolBar extends React.Component{
 	
 	

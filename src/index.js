@@ -4,7 +4,7 @@ import ImageShape from 'zrender/src/shape/Image'
 import PathShape from 'zrender/src/shape/Path'
 import LineShape from 'zrender/src/shape/Line'
 import ReactShape from 'zrender/src/shape/Rectangle'
-import tplRender from './jsx/index.jsx'
+import tplRender from './jsx/index.js'
 
 
 export default class FlowMap extends React.Component{
