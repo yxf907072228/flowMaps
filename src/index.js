@@ -1,5 +1,6 @@
 import React from 'react'
 import zrender from 'zrender/src/zrender'
+import GroupShape from 'zrender/src/shape/group'
 import ImageShape from 'zrender/src/shape/Image'
 import PathShape from 'zrender/src/shape/Path'
 import LineShape from 'zrender/src/shape/Line'
@@ -38,6 +39,7 @@ export default class FlowMap extends React.Component{
        
 		window.addEventListener("resize", this.refreshFillStyle.bind(this))
         this._initPaper()
+        this._initRootGroup()
        // this._initMap()
         this.paperTop=this.getTop(this.refs.paper)
         this.paperLeft=this.getLeft(this.refs.paper)
@@ -50,20 +52,43 @@ export default class FlowMap extends React.Component{
         return tplRender.bind(this)()
     }
     
-    rightMenuHandle(e){
+    getOffset(Node, offset) {
+        if (!offset) {
+            offset = {};
+            offset.top = 0;
+            offset.left = 0;
+        }
+        if (Node == document.body) {//当该节点为body节点时，结束递归
+            return offset;
+        }
+        offset.top += Node.offsetTop;
+        offset.left += Node.offsetLeft;
+        return this.getOffset(Node.parentNode, offset);//向上累加offset里的值
+    }
+
+    getPaperOffset(){
+        let poffset=this.getOffset(this.refs.paper)
+        let pleft=poffset.left,ptop=poffset.top-36
+        return {
+            pleft,ptop
+        }
+    }
+
+    rightMenuHandle(e,event){
     	e.preventDefault()
-    	const flowmap=this.refs.flowmap,rightmenu=this.refs.rightmenu.refs.rightmenu
+        let {pleft,ptop}=this.getPaperOffset()
+    	const paper=this.refs.paper,rightmenu=this.refs.rightmenu.refs.rightmenu
     	let left=e.clientX,top=e.clientY
-    	if(left>this.refs.flowmap.offsetWidth+this.refs.flowmap.offsetLeft-rightmenu.offsetWidth){
-    		left=this.refs.flowmap.offsetWidth+this.refs.flowmap.offsetLeft-rightmenu.offsetWidth
+    	if(left>paper.offsetWidth+paper.offsetLeft-rightmenu.offsetWidth){
+    		left=paper.offsetWidth+paper.offsetLeft-rightmenu.offsetWidth
     		
     	}
-    	if(top>this.refs.flowmap.offsetHeight+this.refs.flowmap.offsetTop-rightmenu.offsetHeight){
-    		top=this.refs.flowmap.offsetHeight+this.refs.flowmap.offsetTop-rightmenu.offsetHeight
+    	if(top>paper.offsetHeight+paper.offsetTop-rightmenu.offsetHeight){
+    		top=paper.offsetHeight+paper.offsetTop-rightmenu.offsetHeight
     	}
     	this.refs.rightmenu.showMenu({
-    		left
-    	   ,top
+    		left:left-pleft
+    	   ,top:top-ptop
     	})
     	//console.log(e.clientX,e.clientY)
     }
@@ -243,6 +268,14 @@ export default class FlowMap extends React.Component{
         }.bind(this))
     }
     
+    _initRootGroup(){
+        let rootGroup=new GroupShape({
+            position:[0,0]
+        })
+        this.zr.addGroup(rootGroup)
+        this.rootGroup=rootGroup
+    }
+
     addActiveArrow(event){
         this.status.activeArrow=this.addArrow(this.status.activeNode,{
             position:[event.clientX-25,event.clientY]
