@@ -1,6 +1,6 @@
 import React from 'react'
 import zrender from 'zrender/src/zrender'
-import GroupShape from 'zrender/src/shape/group'
+import GroupShape from 'zrender/src/shape/Group'
 import ImageShape from 'zrender/src/shape/Image'
 import PathShape from 'zrender/src/shape/Path'
 import LineShape from 'zrender/src/shape/Line'
