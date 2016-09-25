@@ -271,9 +271,14 @@ export default class FlowMap extends React.Component{
     _initRootGroup(){
         let rootGroup=new GroupShape({
             position:[0,0]
+           ,style:{
+               width:1000
+              ,height:1000
+           }
         })
         this.zr.addGroup(rootGroup)
         this.rootGroup=rootGroup
+       // console.log(rootGroup)
     }
 
     addActiveArrow(event){
@@ -433,6 +438,8 @@ export default class FlowMap extends React.Component{
             })
             this.nodes[node['id']]=node
             this.zr.addShape(node);
+             this.rootGroup.addChild(node)
+            console.log(this.rootGroup)
             this.setActiveNode(node)
             return node
     }

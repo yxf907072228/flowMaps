@@ -38,6 +38,7 @@ export default class RightMenu extends React.Component{
 	hideMenu(){
 		this.setState({
 			show:false
+		   ,indexItem:0
 		})
 	}
 /*
