@@ -23,6 +23,6 @@ export default class ToolBar extends React.Component{
 	}
 	
 	onBtnClickHandle(btn){
-		console.log(btn)
+		this.props.clickBtnHandle(btn)
 	}
 }

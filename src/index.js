@@ -39,7 +39,7 @@ export default class FlowMap extends React.Component{
        
 		window.addEventListener("resize", this.refreshFillStyle.bind(this))
         this._initPaper()
-        this._initRootGroup()
+      //  this._initRootGroup()
        // this._initMap()
         this.paperTop=this.getTop(this.refs.paper)
         this.paperLeft=this.getLeft(this.refs.paper)
@@ -114,22 +114,6 @@ export default class FlowMap extends React.Component{
             }
         }
     }    
-
-    selectToolbarBtnHandle(key){
-        const {activeBtn}=this.refs.toolbar.state
-        switch(key){
-            case 'default':
-                if(activeBtn==key){
-                    return
-                }else{
-                    this.enableDrag()
-                }
-            ;break;
-            default:
-                this.disableDrag()
-            ;break;
-        }
-    }
 
     rightMenuClickHandle(index,o,e){
         const {left,top}=this.refs.rightmenu.state
@@ -271,11 +255,17 @@ export default class FlowMap extends React.Component{
     _initRootGroup(){
         let rootGroup=new GroupShape({
             position:[0,0]
-           ,style:{
-               width:1000
-              ,height:1000
-           }
+           
         })
+        var node=new ImageShape({
+                position: [0, 0],
+                    scale: [1, 1],
+                    style: {
+                        x: 0,
+                        y: 0
+                    }
+        })
+        rootGroup.addChild(node)
         this.zr.addGroup(rootGroup)
         this.rootGroup=rootGroup
        // console.log(rootGroup)
@@ -293,6 +283,8 @@ export default class FlowMap extends React.Component{
     }
     
     delActiveArrow(){
+      //  this.rootGroup.removeChild(this.status.activeArrow['line'])
+      //  this.rootGroup.removeChild(this.status.activeArrow['arrow'])
         this.zr.delShape(this.status.activeArrow['line'])
         this.zr.delShape(this.status.activeArrow['arrow'])
         this.status.activeArrow=null
@@ -438,8 +430,8 @@ export default class FlowMap extends React.Component{
             })
             this.nodes[node['id']]=node
             this.zr.addShape(node);
-             this.rootGroup.addChild(node)
-            console.log(this.rootGroup)
+            
+           // this.rootGroup.addChild(node)
             this.setActiveNode(node)
             return node
     }
@@ -558,6 +550,9 @@ export default class FlowMap extends React.Component{
         },source,target)
         this.zr.addShape(arrow)
         this.zr.addShape(line)
+
+      //  this.rootGroup.addChild(arrow)
+      //  this.rootGroup.addChild(line)
         return {
             line:line
            ,arrow:arrow
@@ -612,4 +607,45 @@ export default class FlowMap extends React.Component{
     }
     
     
+    selectToolbarBtnHandle(key){
+        const {activeBtn}=this.refs.toolbar.state
+        switch(key){
+            case 'default':
+                if(activeBtn==key){
+                    return
+                }else{
+                    this.enableDrag()
+                }
+            ;break;
+            default:
+                this.disableDrag()
+            ;break;
+        }
+    }
+
+    clickToolbarBtnHandle(key){
+        switch(key){
+            case 'zoomin':this.zoomIn();break;
+            case 'zoomout':this.zoomOut();break;
+            case 'zoomreset':this.zoomReset();break;
+        }
+
+    }
+
+    zoomIn(){
+        this.rootGroup.scale=[2,2]
+        //this.addNode("zuzhi",0,0)
+        this.zr.render()
+    }
+
+    zoomOut(){
+        this.rootGroup.scale=[0.5,0.5]
+        this.zr.render()
+    }
+    
+    zoomReset(){
+        this.rootGroup.scale=[1,1]
+        this.zr.render()
+    }
+
 }

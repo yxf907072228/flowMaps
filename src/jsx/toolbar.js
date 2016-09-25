@@ -2,9 +2,31 @@ import React from 'react'
 import classNames from 'classnames'
 export default function render(){
     const {activeBtn}=this.state
+	const {toolbarTypes}=this.props
     return (
         <div className='toolbar'>
-				<ul className='btns-group'>
+			{
+				toolbarTypes.map((group,i)=>{
+					return <ul key={i} className='btns-group'>
+						{
+							group.map((item,j)=>{
+								if(item.name=='search'){
+									return <div>
+										<input className='btn' placeholder="Name"/>
+										<li className='btn' onClick={this.onBtnClickHandle.bind(this,'search')}><i className="ico toolbar-search"></i></li>
+									</div>
+								}else if(item.checkBtn){
+									return <li className={classNames({btn:true,active:activeBtn==item.name})} onClick={this.onSelectBtnHandle.bind(this,item.name)}><i className={"ico toolbar-"+item.name}></i></li>
+								}else{
+									return <li className='btn' onClick={this.onBtnClickHandle.bind(this,item.name)}><i className={"ico toolbar-"+item.name}></i></li>
+								}
+								
+							})
+						}
+					</ul>
+				})
+			}
+			{/*	<ul className='btns-group'>
 					<li className={classNames({btn:true,active:activeBtn=='default'})} onClick={this.onSelectBtnHandle.bind(this,'default')}><i className="ico toolbar-default"></i></li>
 					<li className={classNames({btn:true,active:activeBtn=='rectangle_selection'})} onClick={this.onSelectBtnHandle.bind(this,'rectangle_selection')}><i className="ico toolbar-rectangle_selection"></i></li>
 					<li className={classNames({btn:true,active:activeBtn=='pan'})} onClick={this.onSelectBtnHandle.bind(this,'pan')}><i className="ico toolbar-pan"></i></li>
@@ -35,6 +57,7 @@ export default function render(){
 				<ul className='btns-group'>
 					<li className='btn' onClick={this.onBtnClickHandle.bind(this,'max')}><i className="ico toolbar-max"></i></li>
 				</ul>
+				*/}
 				
 			</div>
     )

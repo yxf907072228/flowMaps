@@ -21,7 +21,44 @@ export const MENU_TYPES=[
    ,{key:5,title:"缩小"}
    ,{key:6,title:"1:1"}
 ]
- 
+
+
+export const TOOLBAR_TYPES=[
+    [
+        {name:'default',checkBtn:true}
+       ,{name:'rectangle_selection',checkBtn:true}
+       ,{name:'pan',checkBtn:true}
+    ]
+   ,[
+        {name:'zoomin'}
+       ,{name:'zoomout'}
+       ,{name:'zoomreset'}
+       ,{name:'overview'}
+
+   ]
+   ,[
+        {name:'edge',checkBtn:true}
+       ,{name:'edge_VH',checkBtn:true}
+       ,{name:'polygon',checkBtn:true}
+       ,{name:'line',checkBtn:true}
+   ]
+   ,[
+        {name:'search'}
+   ]
+   ,[
+        {name:'print'}
+   ]
+   ,[
+        {name:'json'}
+   ]
+   ,[
+        {name:'max'}
+   ]
+   
+   
+   
+
+]
 export const NODE_TYPES={
     zuzhi:{icon:zuzhi,level:1,title:'节点一'},
     zzuzhi:{icon:zizuzhi,level:2,title:'节点二'},
