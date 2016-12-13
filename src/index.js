@@ -438,9 +438,11 @@ export default class FlowMap extends React.Component{
     
     setActiveNode(node){
         if(node==null){
-            this.status.activeNode.style.shadowBlur=0
-            this.status.activeNode=null
-            this.zr.render()
+            if(this.status.activeNode){
+                this.status.activeNode.style.shadowBlur = 0;
+                this.status.activeNode = null;
+                this.zr.render();
+            }
             return
         }else if(this.status.activeNode&&this.status.activeNode.id!=node.id){
             this.status.activeNode.style.shadowBlur=0
