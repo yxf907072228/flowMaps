@@ -20,7 +20,7 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-     "zrender":"^2.0.2"
+     "zrender":"^3.2.2"
   },
   "devDependencies": {
     "babel-cli": "^6.5.1",

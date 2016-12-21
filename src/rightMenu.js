@@ -11,6 +11,7 @@ export default class RightMenu extends React.Component{
 		   ,left:0
 		   ,top:0
 		   ,indexItem:0
+		   ,target:null  //右键作用目标的_type值
 		}
 	}
 	

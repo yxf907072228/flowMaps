@@ -1,147 +1,32 @@
 0 info it worked if it ends with ok
-1 verbose cli [ 'D:\\soft\\nodejs\\node.exe',
-1 verbose cli   'D:\\soft\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
-1 verbose cli   'publish' ]
+1 verbose cli [ '/usr/local/bin/node', '/usr/local/bin/npm', 'start' ]
 2 info using npm@3.10.3
-3 info using node@v6.3.1
-4 verbose publish [ '.' ]
-5 silly cache add args [ '.', null ]
-6 verbose cache add spec .
-7 silly cache add parsed spec Result {
-7 silly cache add   raw: '.',
-7 silly cache add   scope: null,
-7 silly cache add   escapedName: null,
-7 silly cache add   name: null,
-7 silly cache add   rawSpec: '.',
-7 silly cache add   spec: 'D:\\Test\\flowMap',
-7 silly cache add   type: 'directory' }
-8 verbose addLocalDirectory C:\Users\yexf\AppData\Roaming\npm-cache\flowMap\3.0.6\package.tgz not in flight; packing
-9 verbose correctMkdir C:\Users\yexf\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
-10 info lifecycle flowMap@3.0.6~prepublish: flowMap@3.0.6
-11 verbose lifecycle flowMap@3.0.6~prepublish: unsafe-perm in lifecycle true
-12 verbose lifecycle flowMap@3.0.6~prepublish: PATH: D:\soft\nodejs\node_modules\npm\bin\node-gyp-bin;D:\Test\flowMap\node_modules\.bin;D:\soft\nodejs;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;D:\soft\nodejs\;D:\soft\Git\bin;D:\Python27;D:\soft\OpenVPN\bin;D:\soft\TortoiseGit\bin;C:\Users\yexf\AppData\Roaming\npm;D:\soft\Git\usr\bin;D:\Program Files\Microvirt\MEmu;D:\soft\Microsoft VS Code\bin
-13 verbose lifecycle flowMap@3.0.6~prepublish: CWD: D:\Test\flowMap
-14 silly lifecycle flowMap@3.0.6~prepublish: Args: [ '/d /s /c', 'npm run build' ]
-15 silly lifecycle flowMap@3.0.6~prepublish: Returned: code: 0  signal: null
-16 verbose tar pack [ 'C:\\Users\\yexf\\AppData\\Roaming\\npm-cache\\flowMap\\3.0.6\\package.tgz',
-16 verbose tar pack   'D:\\Test\\flowMap' ]
-17 verbose tarball C:\Users\yexf\AppData\Roaming\npm-cache\flowMap\3.0.6\package.tgz
-18 verbose folder D:\Test\flowMap
-19 verbose addLocalTarball adding from inside cache C:\Users\yexf\AppData\Roaming\npm-cache\flowMap\3.0.6\package.tgz
-20 verbose correctMkdir C:\Users\yexf\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
-21 silly cache afterAdd flowMap@3.0.6
-22 verbose afterAdd C:\Users\yexf\AppData\Roaming\npm-cache\flowMap\3.0.6\package\package.json not in flight; writing
-23 verbose correctMkdir C:\Users\yexf\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
-24 verbose afterAdd C:\Users\yexf\AppData\Roaming\npm-cache\flowMap\3.0.6\package\package.json written
-25 silly publish { name: 'flowMap',
-25 silly publish   version: '3.0.6',
-25 silly publish   author: { name: 'yxf907072228' },
-25 silly publish   repository:
-25 silly publish    { type: 'git',
-25 silly publish      url: 'git+https://github.com/yxf907072228/flowMap.git' },
-25 silly publish   bugs: { url: 'https://github.com/yxf907072228/flowMap/issues' },
-25 silly publish   publishConfig: { registry: 'https://registry.npmjs.org/' },
-25 silly publish   scripts:
-25 silly publish    { build: 'babel ./src --out-dir ./lib',
-25 silly publish      serve: 'node server.js',
-25 silly publish      prepublish: 'npm run build',
-25 silly publish      'build-demo': 'webpack',
-25 silly publish      start: 'node server.js' },
-25 silly publish   main: 'lib/index.js',
-25 silly publish   dependencies: { zrender: '^2.0.2' },
-25 silly publish   devDependencies:
-25 silly publish    { 'babel-cli': '^6.5.1',
-25 silly publish      'babel-core': '^6.5.2',
-25 silly publish      'babel-loader': '^6.2.3',
-25 silly publish      'babel-plugin-transform-object-rest-spread': '^6.5.0',
-25 silly publish      'babel-preset-es2015': '^6.5.0',
-25 silly publish      'babel-preset-react': '^6.5.0',
-25 silly publish      express: '^4.13.3',
-25 silly publish      webpack: '^1.12.14',
-25 silly publish      'webpack-dev-middleware': '^1.5.1',
-25 silly publish      'webpack-hot-middleware': '^2.7.1',
-25 silly publish      react: '^0.14.7',
-25 silly publish      'react-dom': '^0.14.7',
-25 silly publish      classnames: '^2.2.3',
-25 silly publish      'css-loader': '^0.23.1',
-25 silly publish      'script-loader': '^0.6.1',
-25 silly publish      'style-loader': '^0.13.1',
-25 silly publish      less: '^2.6.1',
-25 silly publish      'less-loader': '^2.2.3',
-25 silly publish      'file-loader': '^0.8.5',
-25 silly publish      'url-loader': '^0.5.7' },
-25 silly publish   readme: '# flowMap\r\n工作流  思维导向图  关系图的React解决方案\r\n# demo运行步骤\r\n## 1.下载项目：git clone https://github.com/yxf907072228/flowMap.git\r\n## 2.进入目录flowMap，执行npm install\r\n## 3.启动：npm start\r\n# 在浏览器输入：http://localhost:3000/ 即可看到运行效果\r\n',
-25 silly publish   readmeFilename: 'README.md',
-25 silly publish   gitHead: '62033f12554760fa85e99adcc14cd1927de483b8',
-25 silly publish   description: '工作流  思维导向图  关系图的React解决方案\r # demo运行步骤\r ## 1.下载项目：git clone https://github.com/yxf907072228/flowMap.git\r ## 2.进入目录flowMap，执行npm install\r ## 3.启动：npm start\r # 在浏览器输入：http://localhost:3000/ 即可看到运行效果',
-25 silly publish   homepage: 'https://github.com/yxf907072228/flowMap#readme',
-25 silly publish   _id: 'flowMap@3.0.6',
-25 silly publish   _shasum: '30e9538c28babfc92433ebcfb3f69e6197499dc6',
-25 silly publish   _from: '.' }
-26 verbose getPublishConfig { registry: 'https://registry.npmjs.org/' }
-27 silly mapToRegistry name flowMap
-28 silly mapToRegistry using default registry
-29 silly mapToRegistry registry https://registry.npmjs.org/
-30 silly mapToRegistry data Result {
-30 silly mapToRegistry   raw: 'flowMap',
-30 silly mapToRegistry   scope: null,
-30 silly mapToRegistry   escapedName: 'flowMap',
-30 silly mapToRegistry   name: 'flowMap',
-30 silly mapToRegistry   rawSpec: '',
-30 silly mapToRegistry   spec: 'latest',
-30 silly mapToRegistry   type: 'tag' }
-31 silly mapToRegistry uri https://registry.npmjs.org/flowMap
-32 verbose publish registryBase https://registry.npmjs.org/
-33 silly publish uploading C:\Users\yexf\AppData\Roaming\npm-cache\flowMap\3.0.6\package.tgz
-34 verbose request uri https://registry.npmjs.org/flowMap
-35 verbose request sending authorization for write operation
-36 info attempt registry request try #1 at 14:05:43
-37 verbose request using bearer token for auth
-38 verbose request id bc75b1754a78defa
-39 http request PUT https://registry.npmjs.org/flowMap
-40 info retry will retry, error on last attempt: Error: read ECONNRESET
-41 info attempt registry request try #2 at 14:05:53
-42 verbose request using bearer token for auth
-43 http request PUT https://registry.npmjs.org/flowMap
-44 info retry will retry, error on last attempt: Error: read ECONNRESET
-45 info attempt registry request try #3 at 14:06:54
-46 verbose request using bearer token for auth
-47 http request PUT https://registry.npmjs.org/flowMap
-48 http 403 https://registry.npmjs.org/flowMap
-49 verbose headers { 'content-type': 'application/json',
-49 verbose headers   'cache-control': 'max-age=300',
-49 verbose headers   'content-length': '95',
-49 verbose headers   'accept-ranges': 'bytes',
-49 verbose headers   date: 'Sun, 25 Sep 2016 06:07:04 GMT',
-49 verbose headers   via: '1.1 varnish',
-49 verbose headers   connection: 'keep-alive',
-49 verbose headers   'x-served-by': 'cache-lcy1132-LCY',
-49 verbose headers   'x-cache': 'MISS',
-49 verbose headers   'x-cache-hits': '0',
-49 verbose headers   'x-timer': 'S1474783615.451053,VS0,VE8756',
-49 verbose headers   vary: 'Accept-Encoding' }
-50 verbose request invalidating C:\Users\yexf\AppData\Roaming\npm-cache\registry.npmjs.org\flowMap on PUT
-51 error publish Failed PUT 403
-52 verbose stack Error: "You cannot publish over the previously published version 3.0.6." : flowMap
-52 verbose stack     at makeError (D:\soft\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:264:12)
-52 verbose stack     at CachingRegistryClient.<anonymous> (D:\soft\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:252:14)
-52 verbose stack     at Request._callback (D:\soft\nodejs\node_modules\npm\node_modules\npm-registry-client\lib\request.js:172:14)
-52 verbose stack     at Request.self.callback (D:\soft\nodejs\node_modules\npm\node_modules\request\request.js:200:22)
-52 verbose stack     at emitTwo (events.js:106:13)
-52 verbose stack     at Request.emit (events.js:191:7)
-52 verbose stack     at Request.<anonymous> (D:\soft\nodejs\node_modules\npm\node_modules\request\request.js:1067:10)
-52 verbose stack     at emitOne (events.js:101:20)
-52 verbose stack     at Request.emit (events.js:188:7)
-52 verbose stack     at IncomingMessage.<anonymous> (D:\soft\nodejs\node_modules\npm\node_modules\request\request.js:988:12)
-53 verbose statusCode 403
-54 verbose pkgid flowMap
-55 verbose cwd D:\Test\flowMap
-56 error Windows_NT 6.2.9200
-57 error argv "D:\\soft\\nodejs\\node.exe" "D:\\soft\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "publish"
-58 error node v6.3.1
-59 error npm  v3.10.3
-60 error code E403
-61 error "You cannot publish over the previously published version 3.0.6." : flowMap
-62 error If you need help, you may report this error at:
-62 error     <https://github.com/npm/npm/issues>
-63 verbose exit [ 1, true ]
+3 info using node@v6.6.0
+4 verbose stack Error: Failed to parse json
+4 verbose stack Unexpected token '/' at 24:7
+4 verbose stack      //"d3":"^4.4.0"
+4 verbose stack       ^
+4 verbose stack     at parseError (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:390:11)
+4 verbose stack     at parseJson (/usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:79:23)
+4 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/read-package-json/read-json.js:48:5
+4 verbose stack     at /usr/local/lib/node_modules/npm/node_modules/graceful-fs/graceful-fs.js:78:16
+4 verbose stack     at tryToString (fs.js:455:3)
+4 verbose stack     at FSReqWrap.readFileAfterClose [as oncomplete] (fs.js:442:12)
+5 verbose cwd /Users/yxf/projects/flowMap
+6 error Darwin 16.1.0
+7 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "start"
+8 error node v6.6.0
+9 error npm  v3.10.3
+10 error file /Users/yxf/projects/flowMap/package.json
+11 error code EJSONPARSE
+12 error Failed to parse json
+12 error Unexpected token '/' at 24:7
+12 error      //"d3":"^4.4.0"
+12 error       ^
+13 error File: /Users/yxf/projects/flowMap/package.json
+14 error Failed to parse package.json data.
+14 error package.json must be actual JSON, not just JavaScript.
+14 error
+14 error This is not a bug in npm.
+14 error Tell the package author to fix their package.json file. JSON.parse
+15 verbose exit [ 1, true ]
