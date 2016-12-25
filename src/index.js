@@ -107,16 +107,29 @@ export default class FlowMap extends React.Component{
      }
 
      test(){
-        let a=this.addArrow({x:110,y:40},{x:200,y:300})
+        
         let node1=this.addNode('zuzhi',299,200)
         let node2=this.addNode('zzuzhi',499,200)
         let node3=this.addNode('zzuzhi',199,100)
+
+
+
+        let arrow1=this.addArrow()
+
+        let arrow2=this.addArrow()
+
+        
+
+        this.addRelation(node1,node2,arrow1)
+        this.addRelation(node2,node3,arrow2)
         
         let container1=this.addContainer(0,100,200)
 
-        this.bindNodeToContainor(container1,node2)
        // this.bindNodeToContainor(container1,node1)
-        this.bindNodeToContainor(container1,a)
+        this.bindNodeToContainor(container1,node2)
+        this.bindNodeToContainor(container1,node3)
+        
+       // this.bindNodeToContainor(container1,node1)
         
      }
 
@@ -128,7 +141,7 @@ export default class FlowMap extends React.Component{
           ,startY
          window.addEventListener("resize", this.refreshFillStyle.bind(this))
          document.body.addEventListener("click",()=>{
-             console.log("click")
+             //console.log("click")
          })
          document.body.addEventListener("mousedown",(e)=>{
             if(this.status.hoverGroup && this.status.locked == false){
@@ -137,6 +150,25 @@ export default class FlowMap extends React.Component{
                 dragTarget = this.rootGroup
                // this.status.activeGroup = this.rootGroup
             }
+
+            if(this.status.activeArrow){
+                 if(this.status.arrowTargetNode){
+                 /*    let newId = "_"+this.status.activeGroup.id+"_"+this.status.arrowTargetNode.id+"_"
+                     let arrow = this.arrows[newId] = this.arrows[this.status.activeArrow.id]
+                     delete this.arrows[this.status.activeArrow.id]
+                     arrow['id'] = newId
+                     this.refreshArrow(this.status.activeArrow)*/
+                     this.addRelation(this.status.activeGroup,this.status.arrowTargetNode,this.status.activeArrow)
+                     
+                     this.status.activeArrow = null
+                     this.setActiveNode(this.status.arrowTargetNode)
+                     this.resetArrowTargetNode()
+                 }else{
+                     this.rootGroup.remove(this.status.activeArrow)
+                     delete this.arrows[this.status.activeArrow.id]
+                     this.status.activeArrow = null
+                 }
+             }
 
             dStartX = e.pageX
             dStartY = e.pageY
@@ -148,6 +180,7 @@ export default class FlowMap extends React.Component{
                  dragTarget = null
              }
          })
+
          document.body.addEventListener("mousemove",(e)=>{
              if(dragTarget){
                   let {scale} = this.status
@@ -160,7 +193,16 @@ export default class FlowMap extends React.Component{
                       dragTarget.position = [
                         startX+divi(e.pageX-dStartX,scale),
                         startY+divi(e.pageY-dStartY,scale)
-                    ]
+                     ]
+                     if(dragTarget['_type'] == 'container'){
+                         dragTarget.childAt(1).eachChild((child)=>{
+                             this.refreshArrowsByNode(child)
+                         })
+                     }else{
+                         this.refreshArrowsByNode(dragTarget)
+                     }
+                     
+
                   }
                   
                 dragTarget.dirty(true)
@@ -169,6 +211,12 @@ export default class FlowMap extends React.Component{
                 }
                // this.testRootGroupReact()
                 this.zr.refresh()
+             }else if(this.status.activeArrow){
+                 let target = this.status.activeGroup
+                 let activeArrowPosition = this.getActiveArrowPosition(e)
+                 this.refreshArrow(this.status.activeArrow, activeArrowPosition.start, activeArrowPosition.end)
+                 //console.log(this.status.activeArrow)
+                 //refreshArrow
              }
          })
 
@@ -179,6 +227,8 @@ export default class FlowMap extends React.Component{
          })
 
          this.zr.on("mousedown",()=>{
+             
+             
              this.setActiveNode(this.rootGroup)
          })
 
@@ -228,8 +278,8 @@ export default class FlowMap extends React.Component{
         
 
         if(node['_type'] == 'rootGroup'){
-            position[0] += node.position[0]
-            position[1] += node.position[1]
+           // position[0] += node.position[0]
+           // position[1] += node.position[1]
             return position
         }else{
             position[0] += node.position[0]*this.status.scale
@@ -251,7 +301,7 @@ export default class FlowMap extends React.Component{
         }
         offset.top += node.offsetTop;
         offset.left += node.offsetLeft;
-        return this.getOffset(node.parentNode, offset);//向上累加offset里的值
+        return this.getOffset(node.offsetParent, offset);//向上累加offset里的值
     }
 
     getPaperOffset(){
@@ -363,7 +413,6 @@ export default class FlowMap extends React.Component{
 
     rightMenuClickHandle(index,o,e){
         const {left,top} = this.refs.rightmenu.state
-        console.log(index)
 		switch(index){
 			case 'addGroup':
 				//创建组相关操作
@@ -430,7 +479,7 @@ export default class FlowMap extends React.Component{
        this.zr.refresh()
     }
 
-    addArrow(start,end){
+    addArrow(start={x:0,y:0},end={x:0,y:0}){
         let line = new LineShape({
                 shape: {
                     x1: start.x,
@@ -445,16 +494,61 @@ export default class FlowMap extends React.Component{
         });
         let arrowPath=this.getArrowPath(start,end,6)
         let path = pathTool.createFromString(arrowPath)
-        var group = this.addGroup()
+        var group = this.addGroup({
+            zlevel: -1,
+            _type: 'arrow'
+        })
         group.add(line)
         group.add(path)
         this.arrows[group.id] = group
+        this.rootGroup.add(group)
         return group
+    }
+
+    refreshArrowsByNode(node){
+        let arrows = this.arrows
+        let targetId = node.id
+        //刷新所有的箭头，性能不好，有待优化
+        for(let key in arrows){
+            let arrow = arrows[key]
+            if((arrow['id']+"").indexOf("_"+targetId+"_") != -1){
+                this.refreshArrow(arrow)
+            }
+        }
     }
 
     refreshArrow(group,start,end){
         let line =  group.childAt(0)
         let arrow =  group.childAt(1)
+        let {scale} = this.status
+        let {NODE_INFO} = this.state.config
+        let nodeWidth = NODE_INFO['width'],
+        nodeHeight = NODE_INFO['height']
+
+        if(start ==null || end == null){
+            let ids = group['id'].split("_")
+            let startOfset = this.getNodeOffset(this.nodes[ids[1]])
+            let endOfset = this.getNodeOffset(this.nodes[ids[2]])
+            
+
+            //交点算法，目前只支持圆形
+            let xLen = endOfset[0] - startOfset[0]
+            let yLen = endOfset[1] - startOfset[1]
+            let zLen= Math.sqrt(Math.pow(yLen,2) + Math.pow(xLen,2))
+
+            let xLow = nodeWidth*xLen/zLen/2
+            let yLow = nodeHeight*yLen/zLen/2
+
+            start = {
+               x : divi( startOfset[0],scale) + NODE_INFO['width']/2 + xLow,
+               y :  divi( startOfset[1] ,scale)+NODE_INFO['height']/2 + yLow
+            }
+
+            end = {
+               x : divi(endOfset[0] ,scale) + NODE_INFO['width']/2 - xLow,
+               y : divi(endOfset[1] ,scale) + NODE_INFO['height']/2 - yLow
+            }
+        }
 
         line.shape = Object.assign(line.shape,{
             x1: start.x,
@@ -484,27 +578,38 @@ export default class FlowMap extends React.Component{
     }
 
 
-    addNode(type,x,y){
+    addNode(type,x,y,title){
+            let {scale} = this.status
+            let rootPosition = this.rootGroup.position
             let {NODE_TYPES ,NODE_INFO} = this.state.config
+            
             var group = this.addGroup({
-                 position:[x,y],
+                 position:[divi(x - rootPosition[0], scale), divi(y - rootPosition[1], scale)],
                  _type:'node',
-                 _title:NODE_TYPES[type]['title'],
+                 _title:title||NODE_TYPES[type]['title'],
+                 zlevel:1,
                  onclick:(e)=>{
                    /* group.zlevel = 2
                     
                     group.dirty(true)
                     this.zr.refresh()*/
                     group.zlevel = 11
-                   // console.log(group)
                  },
                  onmousedown:(e)=>{
+                     if(this.status.arrowTargetNode && this.status.arrowTargetNode.id == group.id){
+                         //连线时候，当作目标节点，只连线，不设为焦点
+                         return this.stopEvent(e)
+                     }
                      this.setActiveNode(group)
                      return this.stopEvent(e)
                  },
                  onmouseover:(e)=>{
                      this.status.hoverGroup = group
                      
+                     if(this.status.activeArrow){
+                         
+                         this.setArrowTargetNode(group)
+                     }
                      return this.stopEvent(e)
                      
                  },
@@ -512,6 +617,7 @@ export default class FlowMap extends React.Component{
                      if(this.status.hoverGroup&&(this.status.hoverGroup.id = group.id)){
                          this.status.hoverGroup = null
                      }
+                     this.resetArrowTargetNode()
                      return this.stopEvent(e)
                  }
             })
@@ -549,7 +655,7 @@ export default class FlowMap extends React.Component{
             style:{
                 x: NODE_INFO['width']/2,
                 y: NODE_INFO['height']+15,
-                text: NODE_TYPES[type]['title'],
+                text: title || NODE_TYPES[type]['title'],
                 width: NODE_INFO['width'],
                 height: NODE_INFO['height'],
                 textAlign:'center',
@@ -565,6 +671,7 @@ export default class FlowMap extends React.Component{
         return group
     }
 
+    //设置聚焦节点
     setActiveNode(node){
         let {activeGroup, minIndex, maxIndex} = this.status
         
@@ -582,12 +689,31 @@ export default class FlowMap extends React.Component{
 
         this.status.hoverGroup = node
         this.status.activeGroup = node
-        
+    }
+
+    //设置连线目标节点
+    setArrowTargetNode(node){
+        if(node.id != this.status.activeGroup.id){
+            node.childAt(0).style.shadowBlur = 10
+            node.childAt(0).dirty(true)
+            this.status.arrowTargetNode = node
+        }
+    }
+
+    //清空连线目标节点
+    resetArrowTargetNode(){
+        if(this.status.arrowTargetNode && this.status.arrowTargetNode.id != this.status.activeGroup.id){
+            this.status.arrowTargetNode.childAt(0).style.shadowBlur = 0
+            this.status.arrowTargetNode.childAt(0).dirty(true)
+            this.status.arrowTargetNode = null
+        }
     }
 
     addContainer(type, x = 0, y = 0){
+        let {scale} = this.status
+        let rootPosition = this.rootGroup.position
         let containerGroup = this.addGroup({
-            position: [x,y],
+            position: [divi(x - rootPosition[0], scale), divi(y - rootPosition[1], scale)],
             zlevel:0,
             _type:'container',
             onmousedown:(e)=>{
@@ -629,6 +755,15 @@ export default class FlowMap extends React.Component{
         return containerGroup;
     }
 
+
+    addRelation(startNode,endNode,arrow){
+        let newId = "_"+startNode.id+"_"+endNode.id+"_"
+        this.arrows[newId] = this.arrows[arrow.id]
+        delete this.arrows[arrow.id]
+        arrow['id'] = newId
+        this.refreshArrow(arrow)
+    }
+
     refreshContainorReact(container){
         let content = container.childAt(1)
         let brect = content.getBoundingRect()
@@ -642,14 +777,14 @@ export default class FlowMap extends React.Component{
             
          })
          rect.dirty(true)
-        //console.log(brect)
-         //this.zr.refresh()
     }
 
     bindNodeToContainor(container,node){
         let content = container.childAt(1)
+        let {scale} = this.status
         content.add(node)
-        node.position=[node.position[0]-container.position[0],node.position[1]-container.position[1]]
+        let offset = this.getNodeOffset(container)
+        node.position=[node.position[0] - offset[0]/scale,node.position[1] - offset[1]/scale]
         this.refreshContainorReact(container)
         //node.position=[node.position[0]-container.position[0],node.position[1]-container.position[1]]
         //node.dirty(true)
@@ -746,11 +881,12 @@ export default class FlowMap extends React.Component{
     }
 
     lookupNode(node){
-        let offset=this.getNodeOffset(node)
+        let offset = this.getNodeOffset(node)
+        let rootPosition = this.rootGroup.position
         const {mapWidth, mapHeight} = this.state
         const {scale} = this.status
-        let xMove = sub(divi(mapWidth, 2), add(offset[0], node.childAt(0).style.width*scale)),
-        yMove = sub(divi(mapHeight, 2), add(offset[1], node.childAt(0).style.height*scale))
+        let xMove = sub(divi(mapWidth, 2), add(offset[0] + rootPosition[0], node.childAt(0).style.width*scale)),
+        yMove = sub(divi(mapHeight, 2), add(offset[1] + rootPosition[1], node.childAt(0).style.height*scale))
 
         this.rootGroup.position = [ add(this.rootGroup.position[0], xMove), add(this.rootGroup.position[1], yMove)]
         this.rootGroup.dirty(true)
@@ -779,6 +915,37 @@ export default class FlowMap extends React.Component{
         let {activeGroup} = this.status
         if(activeGroup && activeGroup['_type'] == 'container'){
             this.bindNodeToContainor(activeGroup, group)
+        }
+    }
+
+    //右键菜单 连接
+    addActiveArrow(e){
+        let arrowPosition = this.getActiveArrowPosition(e)
+        this.status.activeArrow = this.addArrow(arrowPosition.start, arrowPosition.end)
+        return this.status.activeArrow
+    }
+
+    getActiveArrowPosition(e){
+        let {NODE_INFO} = this.state.config
+        let activeGroup = this.status.activeGroup
+        
+        let paperOffset = this.getOffset(this.refs.paper)
+        let rootPosition = this.rootGroup.position
+
+        let startPosition = this.getNodeOffset(activeGroup)
+        let endPosition = [e.clientX - paperOffset.left - rootPosition[0], e.clientY - paperOffset.top - rootPosition[1]]
+
+        let scale = this.status.scale
+
+        return {
+            start:{
+                x: divi(startPosition[0], scale) + NODE_INFO['width']/2,
+                y: divi(startPosition[1], scale) + NODE_INFO['height']/2
+            },
+            end:{
+                x: divi(endPosition[0], scale) + (endPosition[0]>startPosition[0]?-5:5),
+                y: divi(endPosition[1], scale) + (endPosition[1]>startPosition[1]?-5:5),
+            }
         }
     }
 
