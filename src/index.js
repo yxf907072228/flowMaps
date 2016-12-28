@@ -1,5 +1,6 @@
 import React from 'react'
 import zrender from 'zrender/src/zrender'
+import zrUtil from 'zrender/src/core/util'
 import Group from 'zrender/src/container/Group'
 import PathShape from 'zrender/src/graphic/Path'
 import LineShape from 'zrender/src/graphic/shape/Line'
@@ -27,6 +28,8 @@ export default class FlowMap extends React.Component{
            ,checkBtn:""
            ,keyword:"" //搜索关键字
            ,searchIndex:0
+           ,dataStr:'' //整张图序列化之后的字符串
+           ,dataStrValid:true
         }
 
         this.status={
@@ -41,7 +44,6 @@ export default class FlowMap extends React.Component{
            maxScale:5,
            minScale:0.2,
            locked:false
-
         }
 
         this.rootGroup = null
@@ -54,7 +56,7 @@ export default class FlowMap extends React.Component{
             
         }
 
-        this.containors= {
+        this.containers= {
 
         }
     }
@@ -86,6 +88,8 @@ export default class FlowMap extends React.Component{
             _type:"rootGroup"
              
         })
+        
+
       /* 
         this.rootRect=new RectShape({
             style:{
@@ -107,10 +111,10 @@ export default class FlowMap extends React.Component{
      }
 
      test(){
-        
-        let node1=this.addNode('zuzhi',299,200)
-        let node2=this.addNode('zzuzhi',499,200)
-        let node3=this.addNode('zzuzhi',199,100)
+         let _t=new Date().getTime()
+        let node1=this.addNode('zuzhi',[59,500])
+        let node2=this.addNode('zzuzhi',[499,200])
+        let node3=this.addNode('zzuzhi',[199,100])
 
 
 
@@ -123,14 +127,18 @@ export default class FlowMap extends React.Component{
         this.addRelation(node1,node2,arrow1)
         this.addRelation(node2,node3,arrow2)
         
-        let container1=this.addContainer(0,100,200)
+        let container1=this.addContainer(0,[100,200])
 
        // this.bindNodeToContainor(container1,node1)
         this.bindNodeToContainor(container1,node2)
         this.bindNodeToContainor(container1,node3)
-        
-       // this.bindNodeToContainor(container1,node1)
-        
+              
+   /*
+       let data = {"position":[0,0],"nodes":{"2313":{"id":2313,"position":[59,500],"_title":"节点一","_nodeType":"zuzhi"},"2316":{"id":2316,"position":[399,0],"_title":"节点二","_pid":2330,"_nodeType":"zzuzhi"},"2319":{"id":2319,"position":[99,-100],"_title":"节点二","_pid":2330,"_nodeType":"zzuzhi"}},"arrows":{"_2313_2316_":{"id":"_2313_2316_"},"_2316_2319_":{"id":"_2316_2319_"}},"containers":{"2330":{"id":2330,"position":[100,200]}}}
+
+        this.setData(data)  
+        console.log(_t-new Date().getTime(),"!!!!!!!!!!!!!!!!!")
+  */
      }
 
      _initEvents(){
@@ -143,7 +151,7 @@ export default class FlowMap extends React.Component{
          document.body.addEventListener("click",()=>{
              //console.log("click")
          })
-         document.body.addEventListener("mousedown",(e)=>{
+         this.refs.paper.addEventListener("mousedown",(e)=>{
             if(this.status.hoverGroup && this.status.locked == false){
                 dragTarget = this.status.hoverGroup
             }else{
@@ -344,15 +352,21 @@ export default class FlowMap extends React.Component{
 
     clickToolbarBtnHandle(option){
         let name = option.name
+        let {activeBtn} = this.state
         switch(name){
             case 'zoomin':this.zoomIn();break;
             case 'zoomout':this.zoomOut();break;
             case 'zoomreset':this.zoomReset();break;
             case 'reset':this.resetPage();break;
+            case 'json':this.setTxtData();break;
             //case 'pan':this.pan();break;
         }
 
-        if(option.checkBtn){
+        if(option.name != activeBtn){
+            if(activeBtn == 'json' && this.validJson(this.state.dataStr)){
+                this.setData(JSON.parse(this.state.dataStr))
+            }
+
             if(option.name == 'pan'){
                 this.status.locked = true
             }else{
@@ -421,7 +435,7 @@ export default class FlowMap extends React.Component{
 			case 'addNode':
 				//创建节点相关操作
 				if(e){
-					this.createNode(o.type,left-25,top-25)
+                    this.createNode(o.type,[left-25,top-25])
 				}
 			;break;
             case 'addArrow':
@@ -445,6 +459,38 @@ export default class FlowMap extends React.Component{
 		this.zr.handler._lastDownButton = null //右键菜单已经被重写了，防止源码里面对右键的锁定措施
 	}
 
+    dataStrChangeHandle(e){
+        let dataStr = e.target.value
+        let {dataStrValid} = this.state
+        if(this.validJson(dataStr) == false){
+            if(dataStr == ""){
+                this.resetPage()
+            }else{
+             dataStrValid = false
+            }
+            
+        }else{
+            dataStrValid = true
+        }
+
+        this.setState({
+            dataStr,
+            dataStrValid
+        })
+
+    }
+
+    validJson(jsonStr){
+        try{
+            JSON.parse(jsonStr)
+        }catch(e){
+            console.error(e)
+            return false
+        }
+        return true
+    }
+
+
     clearPaper(){
         this.zr.clear()
         
@@ -462,12 +508,17 @@ export default class FlowMap extends React.Component{
         }
     }
     
-    addGroup(opt){
+    addGroup(opt,parent){
         var group = new Group(Object.assign({
             position: [0, 0],
             style:{}
         },opt));
-        this.rootGroup.add(group)
+        if(parent){
+            parent.add(group)
+        }else{
+            this.rootGroup.add(group)
+        }
+        
         return group
     }
 
@@ -479,7 +530,7 @@ export default class FlowMap extends React.Component{
        this.zr.refresh()
     }
 
-    addArrow(start={x:0,y:0},end={x:0,y:0}){
+    addArrow(start={x:0,y:0},end={x:0,y:0},option){
         let line = new LineShape({
                 shape: {
                     x1: start.x,
@@ -494,10 +545,10 @@ export default class FlowMap extends React.Component{
         });
         let arrowPath=this.getArrowPath(start,end,6)
         let path = pathTool.createFromString(arrowPath)
-        var group = this.addGroup({
+        var group = this.addGroup(Object.assign({
             zlevel: -1,
             _type: 'arrow'
-        })
+        },option))
         group.add(line)
         group.add(path)
         this.arrows[group.id] = group
@@ -577,16 +628,18 @@ export default class FlowMap extends React.Component{
         return 'M '+rightPoint.x+' '+rightPoint.y+' L '+x1+' '+y1+' L '+x2+' '+y2+' L '+(rightPoint.x2)+' '+(rightPoint.y2)+' Z'
     }
 
+    
 
-    addNode(type,x,y,title){
+    addNode(type,position,option={},parent){
             let {scale} = this.status
             let rootPosition = this.rootGroup.position
             let {NODE_TYPES ,NODE_INFO} = this.state.config
             
-            var group = this.addGroup({
-                 position:[divi(x - rootPosition[0], scale), divi(y - rootPosition[1], scale)],
+            var group = this.addGroup(Object.assign({
+                 position:[divi(position[0] - rootPosition[0], scale), divi(position[1] - rootPosition[1], scale)],
                  _type:'node',
-                 _title:title||NODE_TYPES[type]['title'],
+                 _nodeType:type,
+                 _title:option['_title']||NODE_TYPES[type]['title'],
                  zlevel:1,
                  onclick:(e)=>{
                    /* group.zlevel = 2
@@ -620,7 +673,7 @@ export default class FlowMap extends React.Component{
                      this.resetArrowTargetNode()
                      return this.stopEvent(e)
                  }
-            })
+            },option),parent)
             var node=new ImageShape({
                 position: [0, 0],
                 scale: [1, 1],
@@ -655,7 +708,7 @@ export default class FlowMap extends React.Component{
             style:{
                 x: NODE_INFO['width']/2,
                 y: NODE_INFO['height']+15,
-                text: title || NODE_TYPES[type]['title'],
+                text: option._title || NODE_TYPES[type]['title'],
                 width: NODE_INFO['width'],
                 height: NODE_INFO['height'],
                 textAlign:'center',
@@ -670,7 +723,7 @@ export default class FlowMap extends React.Component{
         //this.setActiveNode(node)
         return group
     }
-
+    
     //设置聚焦节点
     setActiveNode(node){
         let {activeGroup, minIndex, maxIndex} = this.status
@@ -709,11 +762,11 @@ export default class FlowMap extends React.Component{
         }
     }
 
-    addContainer(type, x = 0, y = 0){
+    addContainer(type, position,option={}){
         let {scale} = this.status
         let rootPosition = this.rootGroup.position
-        let containerGroup = this.addGroup({
-            position: [divi(x - rootPosition[0], scale), divi(y - rootPosition[1], scale)],
+        let containerGroup = this.addGroup(Object.assign({
+            position: [divi(position[0] - rootPosition[0], scale), divi(position[1] - rootPosition[1], scale)],
             zlevel:0,
             _type:'container',
             onmousedown:(e)=>{
@@ -728,7 +781,7 @@ export default class FlowMap extends React.Component{
                     this.status.hoverGroup = null
                 }
             }
-        })
+        },option))
 
         let containerRect = new RectShape({
             shape:{
@@ -751,7 +804,7 @@ export default class FlowMap extends React.Component{
 
         containerGroup.add(containerRect)
         containerGroup.add(contentGroup)
-        this.containors[containerGroup.id] = containerGroup
+        this.containers[containerGroup.id] = containerGroup
         return containerGroup;
     }
 
@@ -796,19 +849,144 @@ export default class FlowMap extends React.Component{
         
     }
 
+    toImage(){
+
+    }
+
+    getData(){
+        let nodes = this.nodes,
+        arrows = this.arrows,
+        containers = this.containers
+
+        let data={
+            position:this.rootGroup.position,
+            scale:this.rootGroup.scale
+        }
+
+        let nodesData = {}, arrowsData = {}, containersData = {}
+        for(let key in nodes){
+            let node = nodes[key]
+            nodesData[key] = {
+                id: node['id'],
+                position: node['position'],
+                _title: node['_title'],
+                _pid:node.parent['_type'] == "containerContent"?node.parent.parent.id:parent.id,
+                _nodeType:node['_nodeType']
+            }
+        }
+
+        for(let key in arrows){
+            let arrow = arrows[key]
+            arrowsData[key] = {
+                id: arrow['id']
+            }
+        }
+
+        for(let key in containers){
+            let containor = containers[key]
+            containersData[key] = {
+                id: containor.id
+               ,position: containor.position
+            }
+        }
+
+        data['nodes'] = nodesData
+        data['arrows'] = arrowsData
+        data['containers'] = containersData
+        
+        return data;
+
+    }
+
+    setData(data){
+        const {position, scale, containers, nodes, arrows} = data
+        this.resetPage({}, ()=>{
+            for(let key in containers){
+                let container=  containers[key]
+            // console.log(container)
+                this.addContainer('container', container.position,{id:container.id})
+            }
+
+            for(let key in nodes){
+                let node = nodes[key]
+                let container = this.containers[node['_pid']]
+                this.addNode(node['_nodeType'],node['position'],{
+                    _title:node['_title'],
+                    id:node['id']
+                },container&&container.childAt(1))
+                
+            }
+
+            for(let key in this.containers){
+                
+                this.refreshContainorReact(this.containers[key])
+            }
+
+            for(let key in arrows){
+                let arrow = arrows[key]
+                let ids = arrow.id.split('_')
+                let startNode = this.nodes[ids[1]],
+                endNode = this.nodes[ids[2]]
+
+                let arrowGroup = this.addArrow({
+                    x: startNode.position[0],
+                    y: startNode.position[1]
+                },{
+                    x: endNode.position[0],
+                    y: endNode.position[1]
+                },{
+                    id:arrow['id']
+                })
+
+                this.refreshArrow(arrowGroup)
+            }
+    
+            this.rootGroup.position = position
+            this.rootGroup.scale = scale || [1,1]
+        })
+    }
+
+
     //######################所有工具栏点击操作################################
     //工具栏，清空页面
-    resetPage(){
+    resetPage(option={},callback){
         this.zr.clear()
         this.nodes= {}
         this.arrows= {}
-        this.containors= {}
-        this.rootGroup = new Group({
-            position:[0,0]
+        this.containers= {}
+
+        this.status={
+            hoverGroup: null,
+            maxIndex: 99,
+            minIndex: 1,
+            scale:1,
+            maxScale:5,
+            minScale:0.2,
+            locked:false
+        }
+
+        this.setState({
+           // config:this.props.config
+           //,checkBtn:""
+           //,keyword:"" //搜索关键字
+            searchIndex:0
+           ,dataStr:'' //整张图序列化之后的字符串
+           ,dataStrValid:true
+        },()=>{
+            this._initRootGroup()
+            callback&&callback()
         })
-        this.zr.add(this.rootGroup)
+        
     }
 
+    _initRootGroup(option={}){
+        this.rootGroup = new Group(Object.assign({
+            position: [0,0]
+           ,id: new Date().getTime()
+           ,_type: 'rootGroup' 
+        }))
+        this.zr.add(this.rootGroup)
+    }
     //比例操作
     zoom(scale){
         let {maxScale,minScale} = this.status
@@ -899,10 +1077,20 @@ export default class FlowMap extends React.Component{
         }
     }
 
+
+    //工具栏，显示json
+    setTxtData(){
+        let data = this.getData()
+        this.setState({
+            dataStr: JSON.stringify(data, null, 10),
+            dataStrValid:true
+        })
+    }
+
     //######################所有右键菜单操作################################
     //右键菜单栏，创建节点操作
     createNode(type, x, y){
-        let node = this.addNode(type, x, y)
+        let node = this.addNode(type, [x, y])
         let {activeGroup} = this.status
         if(activeGroup && activeGroup['_type'] == 'container'){
             this.bindNodeToContainor(activeGroup, node)
@@ -911,7 +1099,7 @@ export default class FlowMap extends React.Component{
 
     //创建组操作
     createContainer(type, x, y){
-        let group = this.addContainer(type, x, y)
+        let group = this.addContainer(type, [x, y])
         let {activeGroup} = this.status
         if(activeGroup && activeGroup['_type'] == 'container'){
             this.bindNodeToContainor(activeGroup, group)

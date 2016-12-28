@@ -49,7 +49,7 @@ export const TOOLBAR_TYPES = [
         {name:'print'}
    ]
    ,[
-        {name:'json'}
+        {name:'json',checkBtn:true}
    ]
    ,[
         {name:'max'},{name:'reset'}
