@@ -14,6 +14,7 @@ import tplRender from './jsx/index.js'
 import pathTool from 'zrender/src/tool/path'
 
 
+
 export default class FlowMap extends React.Component{
     
     constructor(props){
@@ -88,30 +89,13 @@ export default class FlowMap extends React.Component{
             _type:"rootGroup"
              
         })
-        
-
-      /* 
-        this.rootRect=new RectShape({
-            style:{
-                 fill:null,
-                 stroke:"red"
-            },
-            shape:{
-                x:100,
-                y:100,
-                width:100,
-                height:100
-            }
-        })*/
-        /*
-        this.zr.add(this.rootRect)
-        */
+       
         this.zr.add(this.rootGroup)
-        this.test();
+       // this.test();
      }
 
      test(){
-         let _t=new Date().getTime()
+        let _t=new Date().getTime()
         let node1=this.addNode('zuzhi',[59,500])
         let node2=this.addNode('zzuzhi',[499,200])
         let node3=this.addNode('zzuzhi',[199,100])
@@ -129,16 +113,8 @@ export default class FlowMap extends React.Component{
         
         let container1=this.addContainer(0,[100,200])
 
-       // this.bindNodeToContainor(container1,node1)
         this.bindNodeToContainor(container1,node2)
         this.bindNodeToContainor(container1,node3)
-              
-   /*
-       let data = {"position":[0,0],"nodes":{"2313":{"id":2313,"position":[59,500],"_title":"节点一","_nodeType":"zuzhi"},"2316":{"id":2316,"position":[399,0],"_title":"节点二","_pid":2330,"_nodeType":"zzuzhi"},"2319":{"id":2319,"position":[99,-100],"_title":"节点二","_pid":2330,"_nodeType":"zzuzhi"}},"arrows":{"_2313_2316_":{"id":"_2313_2316_"},"_2316_2319_":{"id":"_2316_2319_"}},"containers":{"2330":{"id":2330,"position":[100,200]}}}
-
-        this.setData(data)  
-        console.log(_t-new Date().getTime(),"!!!!!!!!!!!!!!!!!")
-  */
      }
 
      _initEvents(){
@@ -148,34 +124,16 @@ export default class FlowMap extends React.Component{
          let startX 
           ,startY
          window.addEventListener("resize", this.refreshFillStyle.bind(this))
-         document.body.addEventListener("click",()=>{
-             //console.log("click")
-         })
+
          this.refs.paper.addEventListener("mousedown",(e)=>{
             if(this.status.hoverGroup && this.status.locked == false){
                 dragTarget = this.status.hoverGroup
             }else{
                 dragTarget = this.rootGroup
-               // this.status.activeGroup = this.rootGroup
             }
 
             if(this.status.activeArrow){
-                 if(this.status.arrowTargetNode){
-                 /*    let newId = "_"+this.status.activeGroup.id+"_"+this.status.arrowTargetNode.id+"_"
-                     let arrow = this.arrows[newId] = this.arrows[this.status.activeArrow.id]
-                     delete this.arrows[this.status.activeArrow.id]
-                     arrow['id'] = newId
-                     this.refreshArrow(this.status.activeArrow)*/
-                     this.addRelation(this.status.activeGroup,this.status.arrowTargetNode,this.status.activeArrow)
-                     
-                     this.status.activeArrow = null
-                     this.setActiveNode(this.status.arrowTargetNode)
-                     this.resetArrowTargetNode()
-                 }else{
-                     this.rootGroup.remove(this.status.activeArrow)
-                     delete this.arrows[this.status.activeArrow.id]
-                     this.status.activeArrow = null
-                 }
+                 this.connectActiveArrow()
              }
 
             dStartX = e.pageX
@@ -197,6 +155,7 @@ export default class FlowMap extends React.Component{
                         startX+e.pageX-dStartX,
                         startY+e.pageY-dStartY
                     ]
+                    console.log(dragTarget.position)
                   }else{
                       dragTarget.position = [
                         startX+divi(e.pageX-dStartX,scale),
@@ -240,7 +199,7 @@ export default class FlowMap extends React.Component{
              this.setActiveNode(this.rootGroup)
          })
 
-         this.refs.flowmap.addEventListener("mousewheel",(e)=>{
+         this.refs.paper.addEventListener("mousewheel",(e)=>{
              if(e.wheelDelta > 0){
                  this.zoomIn()
              }else if(e.wheelDelta < 0){
@@ -250,27 +209,17 @@ export default class FlowMap extends React.Component{
              e.preventDefault()
          })
 
-     }
-    /* 
-     testRootGroupReact(){
-         let rootRect = this.rootRect
-         let brect =this.rootGroup.getBoundingRect()
-         rootRect.shape =Object.assign(this.rootGroup.getBoundingRect(),{
-             x:this.rootGroup.position[0]+brect.x,
-             y:this.rootGroup.position[1]+brect.y
-         })
-         rootRect.dirty(true)
-         console.log(this.rootGroup.getBoundingRect())
-     }
-    */
+    }
+
     add(node){
         this.rootGroup.add(node)
     }
 
     refreshFillStyle(){
+        let toolbarHeight = this.refs.toolbar?(this.refs.toolbar.offsetHeight):0
         this.setState({
-            mapWidth:window.innerWidth  
-           ,mapHeight:window.innerHeight-46 
+            mapWidth:window.innerWidth
+           ,mapHeight:window.innerHeight-toolbarHeight
         })
 
         this.paperTop=this.getTop(this.refs.paper)
@@ -283,8 +232,6 @@ export default class FlowMap extends React.Component{
             position = [0, 0]
         }
         
-        
-
         if(node['_type'] == 'rootGroup'){
            // position[0] += node.position[0]
            // position[1] += node.position[1]
@@ -313,8 +260,9 @@ export default class FlowMap extends React.Component{
     }
 
     getPaperOffset(){
+        let toolbarHeight = this.refs.toolbar?(this.refs.toolbar.offsetHeight):0
         let poffset=this.getOffset(this.refs.paper)
-        let pleft=poffset.left,ptop=poffset.top-36
+        let pleft=poffset.left,ptop=poffset.top - toolbarHeight
         return {
             pleft,ptop
         }
@@ -337,8 +285,6 @@ export default class FlowMap extends React.Component{
     stopEvent(e){
         e.returnValue = false;
         e.cancelBubble = true;
-        //e.event.preventDefault();
-        //e.event.stopPropagation();
         return e
     }
 
@@ -400,7 +346,11 @@ export default class FlowMap extends React.Component{
     }
 
     rightMenuHandle(e,event){
+
     	e.preventDefault()
+        if(!this.state.config['MENU_TYPES']){
+            return
+        }
         if(this.status.locked){
             return
         }
@@ -430,7 +380,7 @@ export default class FlowMap extends React.Component{
 		switch(index){
 			case 'addGroup':
 				//创建组相关操作
-                this.createContainer(o.type,left-25,top-25)
+                this.createContainer(o.type,[left-25,top-25])
 			;break
 			case 'addNode':
 				//创建节点相关操作
@@ -639,7 +589,7 @@ export default class FlowMap extends React.Component{
                  position:[divi(position[0] - rootPosition[0], scale), divi(position[1] - rootPosition[1], scale)],
                  _type:'node',
                  _nodeType:type,
-                 _title:option['_title']||NODE_TYPES[type]['title'],
+                 title:option['title']||NODE_TYPES[type]['title'],
                  zlevel:1,
                  onclick:(e)=>{
                    /* group.zlevel = 2
@@ -688,27 +638,18 @@ export default class FlowMap extends React.Component{
                     lineWidth: 5,
                     shadowBlur: 0,
                     shadowColor:'yellow'
-                  //  ,text: NODE_TYPES[type]['title']
-                  //  ,textColor:'#666'
-                  //  ,textPosition:'bottom'
-                  //  ,textFont:'bold 10px verdana'
                 },
                 draggable: false,
                 hoverable: false,
                 clickable:false,
-                silent: false,
-                
-               /* _sourceArrows:{},
-                _targetArrows:{},
-                _sourceNodes:{},
-                _targetNodes:{},*/
+                silent: false
         })
 
         let titleNode = new TextShape({
             style:{
                 x: NODE_INFO['width']/2,
                 y: NODE_INFO['height']+15,
-                text: option._title || NODE_TYPES[type]['title'],
+                text: option.title || NODE_TYPES[type]['title'],
                 width: NODE_INFO['width'],
                 height: NODE_INFO['height'],
                 textAlign:'center',
@@ -719,8 +660,6 @@ export default class FlowMap extends React.Component{
         group.add(node);
         group.add(titleNode);
         this.nodes[group['id']] = group
-        // this.rootGroup.addChild(node)
-        //this.setActiveNode(node)
         return group
     }
     
@@ -764,11 +703,13 @@ export default class FlowMap extends React.Component{
 
     addContainer(type, position,option={}){
         let {scale} = this.status
+        let {GROUP_TYPES} = this.state.config
         let rootPosition = this.rootGroup.position
         let containerGroup = this.addGroup(Object.assign({
             position: [divi(position[0] - rootPosition[0], scale), divi(position[1] - rootPosition[1], scale)],
             zlevel:0,
             _type:'container',
+            _containerType:type,
             onmousedown:(e)=>{
                this.setActiveNode(containerGroup)
                return this.stopEvent(e)
@@ -783,19 +724,42 @@ export default class FlowMap extends React.Component{
             }
         },option))
 
-        let containerRect = new RectShape({
-            shape:{
-                x:0,
-                y:0,
-                width:200,
-                height:100
-            },
-            style:{
-                fill:'rgba(255, 0, 0, 0)',
-                stroke:'red'
-            },
-            zlevel:0
-        })
+        let containerRect
+        if(GROUP_TYPES[type]['shape'] == 'image'){
+            containerRect=new ImageShape({
+                    position: [0, 0],
+                    _type:"image",
+                    style: Object.assign({
+                        x:0,
+                        y:0,
+                        width:200,
+                        height:100,
+                        image:GROUP_TYPES[type]['image']
+                    },GROUP_TYPES[type]['style']),
+                    zlevel:0
+            })
+        }else{
+            containerRect = new RectShape({
+                shape:{
+                    x:0,
+                    y:0,
+                    width:200,
+                    height:100
+                },
+                style: Object.assign({
+                    fill:'rgba(255, 0, 0, 0)',
+                    stroke:'red'
+                },GROUP_TYPES[type]['style']),
+                zlevel:0
+            })
+            if(GROUP_TYPES[type]['animateTime']){
+                containerRect.animate('style', true)
+                .when(GROUP_TYPES[type]['animateTime'], GROUP_TYPES[type]['animateOption'])
+                .start();
+            }
+            
+        }
+
 
         let contentGroup = this.addGroup({
             position: [0,0],
@@ -808,6 +772,19 @@ export default class FlowMap extends React.Component{
         return containerGroup;
     }
 
+    connectActiveArrow(){
+        if(this.status.arrowTargetNode){
+            this.addRelation(this.status.activeGroup,this.status.arrowTargetNode,this.status.activeArrow)
+            
+            this.status.activeArrow = null
+            this.setActiveNode(this.status.arrowTargetNode)
+            this.resetArrowTargetNode()
+        }else{
+            this.rootGroup.remove(this.status.activeArrow)
+            delete this.arrows[this.status.activeArrow.id]
+            this.status.activeArrow = null
+        }
+    }
 
     addRelation(startNode,endNode,arrow){
         let newId = "_"+startNode.id+"_"+endNode.id+"_"
@@ -821,15 +798,24 @@ export default class FlowMap extends React.Component{
         let content = container.childAt(1)
         let brect = content.getBoundingRect()
         let rect = container.childAt(0)
+        if(rect['_type'] == 'image'){
+            rect.style = Object.assign(rect.style, {
+                x: brect.x-10,
+                y: brect.y-10,
+                width: brect.width+20,
+                height: brect.height+20
+            })
+        }else{
+            rect.shape =Object.assign(brect,{
+                x: brect.x-10,
+                y: brect.y-10,
+                width: brect.width+20,
+                height: brect.height+20
+                
+            })
+        }
 
-        rect.shape =Object.assign(brect,{
-            x: brect.x-10,
-            y: brect.y-10,
-            width: brect.width+20,
-            height: brect.height+20
-            
-         })
-         rect.dirty(true)
+        rect.dirty(true)
     }
 
     bindNodeToContainor(container,node){
@@ -869,24 +855,28 @@ export default class FlowMap extends React.Component{
             nodesData[key] = {
                 id: node['id'],
                 position: node['position'],
-                _title: node['_title'],
+                title: node['title'],
                 _pid:node.parent['_type'] == "containerContent"?node.parent.parent.id:parent.id,
-                _nodeType:node['_nodeType']
+                _nodeType:node['_nodeType'],
+                _data: node['_data']
             }
         }
 
         for(let key in arrows){
             let arrow = arrows[key]
             arrowsData[key] = {
-                id: arrow['id']
+                id: arrow['id'],
+                _data: arrow['_data']
             }
         }
 
         for(let key in containers){
             let containor = containers[key]
             containersData[key] = {
-                id: containor.id
-               ,position: containor.position
+                id: containor.id,
+                position: containor.position,
+                _containerType: containor['_containerType'],
+                _data: containor['_data']
             }
         }
 
@@ -902,17 +892,21 @@ export default class FlowMap extends React.Component{
         const {position, scale, containers, nodes, arrows} = data
         this.resetPage({}, ()=>{
             for(let key in containers){
-                let container=  containers[key]
+                let container =  containers[key]
             // console.log(container)
-                this.addContainer('container', container.position,{id:container.id})
+                this.addContainer(container['_containerType'], container.position,{
+                    id:container.id,
+                    _data:container['_data']
+                })
             }
 
             for(let key in nodes){
                 let node = nodes[key]
                 let container = this.containers[node['_pid']]
                 this.addNode(node['_nodeType'],node['position'],{
-                    _title:node['_title'],
-                    id:node['id']
+                    title:node['title'],
+                    id:node['id'],
+                    _data:node['_data']
                 },container&&container.childAt(1))
                 
             }
@@ -935,7 +929,8 @@ export default class FlowMap extends React.Component{
                     x: endNode.position[0],
                     y: endNode.position[1]
                 },{
-                    id:arrow['id']
+                    id:arrow['id'],
+                    _data:arrow['_data']
                 })
 
                 this.refreshArrow(arrowGroup)
@@ -943,6 +938,7 @@ export default class FlowMap extends React.Component{
     
             this.rootGroup.position = position
             this.rootGroup.scale = scale || [1,1]
+            this.status.scale = scale[0]
         })
     }
 
@@ -1014,15 +1010,16 @@ export default class FlowMap extends React.Component{
     zoomReset(){
         let scale=this.status.scale = 1
         this.zoom(scale)
-        if(this.status.activeGroup){
+       /* if(this.status.activeGroup){
             this.lookupNode(this.status.activeGroup)
-        }
+        }*/
     }
 
     //设置搜索关键字
     setKeyWord(e){
         this.setState({
-            keyword:e.target.value
+            keyword:e.target.value,
+            searchIndex:0
         })
     }
 
@@ -1041,7 +1038,7 @@ export default class FlowMap extends React.Component{
                 continue
             }
             let node = nodes[key]
-            if(node['_title'] && node['_title'].indexOf(keyword) != -1&&(this.status.activeGroup == null || this.status.activeGroup.id != node.id)){
+            if(node['title'] && node['title'].indexOf(keyword) != -1&&(this.status.activeGroup == null || this.status.activeGroup.id != node.id)){
                 this.setActiveNode(node)
                 this.setState({
                     searchIndex:index
@@ -1051,7 +1048,7 @@ export default class FlowMap extends React.Component{
             }
         }
 
-        if(this.getMapLength(nodes) == searchIndex+1){
+        if(this.getMapLength(nodes) == index){
             this.setState({
                     searchIndex:0
             })
@@ -1089,8 +1086,8 @@ export default class FlowMap extends React.Component{
 
     //######################所有右键菜单操作################################
     //右键菜单栏，创建节点操作
-    createNode(type, x, y){
-        let node = this.addNode(type, [x, y])
+    createNode(type, position){
+        let node = this.addNode(type, position)
         let {activeGroup} = this.status
         if(activeGroup && activeGroup['_type'] == 'container'){
             this.bindNodeToContainor(activeGroup, node)
@@ -1098,8 +1095,8 @@ export default class FlowMap extends React.Component{
     }
 
     //创建组操作
-    createContainer(type, x, y){
-        let group = this.addContainer(type, [x, y])
+    createContainer(type, position){
+        let group = this.addContainer(type, position)
         let {activeGroup} = this.status
         if(activeGroup && activeGroup['_type'] == 'container'){
             this.bindNodeToContainor(activeGroup, group)

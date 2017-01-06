@@ -25,7 +25,7 @@ export default function render( ){
         	{/*
                 <ToolBar ref="toolbar" clickBtnHandle={this.clickToolbarBtnHandle.bind(this)} selectBtnHandle={this.selectToolbarBtnHandle.bind(this)} toolbarTypes={config.TOOLBAR_TYPES}></ToolBar>
             */}
-            {renderToolBar.call(this)}
+            {config['TOOLBAR_TYPES']&&renderToolBar.call(this)}
             <div ref="paper" className={classNames({"paper":true,"active": activeBtn !== 'json'})} style={{width:mapWidth,height:mapHeight}} onContextMenu={this.rightMenuHandle.bind(this)} >
                 
             </div>

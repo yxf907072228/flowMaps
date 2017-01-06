@@ -12,6 +12,8 @@ import chaosuan from '../images/chaosuan.png'
 import chaosuan_false from '../images/chaosuan_false.png'
 import chaosuan_no from '../images/chaosuan_no.png'
 
+import cloudImage from '../images/cloud_bk.png'
+
 export const MENU_TYPES = [
     {key:"addGroup",title:"新建组",targets:{node:false,rootGroup:true,container:false}}
    ,{key:"addNode",title:"新建节点",targets:{node:false,rootGroup:true,container:true}}
@@ -68,15 +70,29 @@ export const NODE_TYPES = {
 
 export const GROUP_TYPES = {
     group1:{
-        title:'组一'
+        title:'组一',
+        style:{
+            lineWidth: 3
+           
+        }
     },
     group2:{
         title:'组二'
+       ,shape:'image'
+       ,image:cloudImage
     },
     group3:{
-        title:'组三'
+        title:'组三',
+        style:{
+            lineWidth: 5,
+            lineDash: [10, 10],
+            stroke:"orange"
+        },
+        animateTime:1000,
+        animateOption:{
+            lineDashOffset: -20
+        }
     }
-
 }
 
 export const NODE_TYPES_LENGTH = 4
@@ -84,13 +100,4 @@ export const NODE_TYPES_LENGTH = 4
 export const NODE_INFO = {
     width:45
    ,height:50
-}
-
-export let MAP_DATA = {
-    nodes:{
-        
-    }
-   ,arrow:{
-       
-   }
 }
