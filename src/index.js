@@ -60,6 +60,10 @@ export default class FlowMap extends React.Component{
         this.containers= {
 
         }
+
+        this._data = {
+
+        }
     }
     
     componentDidMount() {
@@ -85,13 +89,15 @@ export default class FlowMap extends React.Component{
         let _this=this
         this.zr = zrender.init(this.refs.paper)
         this.rootGroup = new Group({
-            position:[0,0],
-            _type:"rootGroup"
-             
+            position:[0,0]
         })
-       
+
+        this.data(this.rootGroup,{
+            type:"rootGroup"
+        })
+
         this.zr.add(this.rootGroup)
-       // this.test();
+        // this.test();
      }
 
      test(){
@@ -122,7 +128,8 @@ export default class FlowMap extends React.Component{
          dStartY,
          dragTarget;
          let startX 
-          ,startY
+         ,startY
+
          window.addEventListener("resize", this.refreshFillStyle.bind(this))
 
          this.refs.paper.addEventListener("mousedown",(e)=>{
@@ -150,7 +157,7 @@ export default class FlowMap extends React.Component{
          document.body.addEventListener("mousemove",(e)=>{
              if(dragTarget){
                   let {scale} = this.status
-                  if( dragTarget['_type'] == 'rootGroup' ){
+                  if( this.data(dragTarget) == 'rootGroup' ){
                       dragTarget.position = [
                         startX+e.pageX-dStartX,
                         startY+e.pageY-dStartY
@@ -161,7 +168,7 @@ export default class FlowMap extends React.Component{
                         startX+divi(e.pageX-dStartX,scale),
                         startY+divi(e.pageY-dStartY,scale)
                      ]
-                     if(dragTarget['_type'] == 'container'){
+                     if(this.data(dragTarget)['type'] == 'container'){
                          dragTarget.childAt(1).eachChild((child)=>{
                              this.refreshArrowsByNode(child)
                          })
@@ -173,7 +180,7 @@ export default class FlowMap extends React.Component{
                   }
                   
                 dragTarget.dirty(true)
-                if(dragTarget.parent&&dragTarget.parent._type == 'containerContent'){
+                if(dragTarget.parent&&this.data(dragTarget.parent)['type'] == 'containerContent'){
                     this.refreshContainerReact(dragTarget.parent.parent)
                 }
                // this.testRootGroupReact()
@@ -232,7 +239,7 @@ export default class FlowMap extends React.Component{
             position = [0, 0]
         }
         
-        if(node['_type'] == 'rootGroup'){
+        if(this.data(node)['type'] == 'rootGroup'){
            // position[0] += node.position[0]
            // position[1] += node.position[1]
             return position
@@ -315,7 +322,7 @@ export default class FlowMap extends React.Component{
 
         if(option.name != activeBtn){
             if(activeBtn == 'json' && this.validJson(this.state.dataStr)){
-                this.setData(JSON.parse(this.state.dataStr))
+                this.deserialization(JSON.parse(this.state.dataStr))
             }
 
             if(option.name == 'pan'){
@@ -375,7 +382,7 @@ export default class FlowMap extends React.Component{
     	this.refs.rightmenu.showMenu({
     		left:left-pleft+window.scrollX
     	   ,top:top-ptop+window.scrollY
-           ,target:(this.status.hoverGroup&&this.status.hoverGroup._type)||"rootGroup"
+           ,target:(this.status.hoverGroup&&this.data(this.status.hoverGroup)['type'])||"rootGroup"
     	})
     }
 
@@ -459,11 +466,17 @@ export default class FlowMap extends React.Component{
            ,activeArrow:null
            ,dragging:false
         }
-        this.nodes={
+        this.nodes = {
             
         }
-        this.arrows={
+        this.arrows = {
             
+        }
+        this.containers = {
+
+        }
+        this._data = {
+
         }
     }
     
@@ -505,9 +518,13 @@ export default class FlowMap extends React.Component{
         let arrowPath=this.getArrowPath(start,end,6)
         let path = pathTool.createFromString(arrowPath)
         var group = this.addGroup(Object.assign({
-            zlevel: -1,
-            _type: 'arrow'
+            zlevel: -1
         },option))
+
+        this.data(group,{
+            type: 'arrow'
+        })
+
         group.add(line)
         group.add(path)
         this.arrows[group.id] = group
@@ -593,13 +610,13 @@ export default class FlowMap extends React.Component{
         let {activeGroup, minIndex, maxIndex} = this.status
         
         
-        if(activeGroup&&activeGroup['_type'] == 'node' ){
+        if(activeGroup&&this.data(activeGroup)['type'] == 'node' ){
             activeGroup.childAt(0).style.shadowBlur = 0
             this.setGroupZLevel(activeGroup, minIndex)
         }
            
         
-        if(node['_type'] == 'node' ){
+        if(this.data(node)['type'] == 'node' ){
             node.childAt(0).style.shadowBlur = 10
             this.setGroupZLevel(node, maxIndex)
         }
@@ -632,16 +649,10 @@ export default class FlowMap extends React.Component{
             let {NODE_TYPES ,NODE_INFO} = this.state.config
             
             var group = this.addGroup(Object.assign({
+                 id:option.id || new Date().getTime(),
                  position:[divi(position[0] - rootPosition[0], scale), divi(position[1] - rootPosition[1], scale)],
-                 _type:'node',
-                 _nodeType:type,
-                 title:option['title']||NODE_TYPES[type]['title'],
                  zlevel:1,
                  onclick:(e)=>{
-                   /* group.zlevel = 2
-                    
-                    group.dirty(true)
-                    this.zr.refresh()*/
                     group.zlevel = 11
                  },
                  onmousedown:(e)=>{
@@ -670,6 +681,13 @@ export default class FlowMap extends React.Component{
                      return this.stopEvent(e)
                  }
             },option),parent)
+
+            let nodeData = this.data(group,{
+                type: 'node',
+                nodeType: type,
+                title: option['title'] || NODE_TYPES[type]['title'],
+            })
+
             var node=new ImageShape({
                 position: [0, 0],
                 scale: [1, 1],
@@ -695,7 +713,7 @@ export default class FlowMap extends React.Component{
             style:{
                 x: NODE_INFO['width']/2,
                 y: NODE_INFO['height']+15,
-                text: option.title || NODE_TYPES[type]['title'],
+                text: nodeData['title'],
                 textAlign:'center'
             }
         })
@@ -713,8 +731,6 @@ export default class FlowMap extends React.Component{
         let containerGroup = this.addGroup(Object.assign({
             position: [divi(position[0] - rootPosition[0], scale), divi(position[1] - rootPosition[1], scale)],
             zlevel:0,
-            _type:'container',
-            _containerType:type,
             onmousedown:(e)=>{
                this.setActiveNode(containerGroup)
                return this.stopEvent(e)
@@ -729,11 +745,16 @@ export default class FlowMap extends React.Component{
             }
         },option))
 
+        let containerData = this.data(containerGroup,{
+            type:'container',
+            containerType:type,
+            title:option.title || GROUP_TYPES[type]['title']
+        })
+
         let containerRect
         if(GROUP_TYPES[type]['shape'] == 'image'){
             containerRect=new ImageShape({
                     position: [0, 0],
-                    _type:"image",
                     style: Object.assign({
                         x:0,
                         y:0,
@@ -743,6 +764,11 @@ export default class FlowMap extends React.Component{
                     },GROUP_TYPES[type]['style']),
                     zlevel:0
             })
+
+            this.data(containerRect, {
+                type:"image"
+            })
+
         }else{
             containerRect = new RectShape({
                 shape:{
@@ -767,8 +793,11 @@ export default class FlowMap extends React.Component{
 
 
         let contentGroup = this.addGroup({
-            position: [0,0],
-            _type:"containerContent"
+            position: [0,0]
+        })
+
+        this.data(contentGroup, {
+            type:"containerContent"
         })
 
         let titleContainer = new TextShape({
@@ -820,7 +849,7 @@ export default class FlowMap extends React.Component{
         rwidth = brect.width+20,
         rheight = brect.height+20
 
-        if(rect['_type'] == 'image'){
+        if(this.data(rect)['type'] == 'image'){
             rect.style = Object.assign(rect.style, {
                 x: rx,
                 y: ry,
@@ -833,7 +862,6 @@ export default class FlowMap extends React.Component{
                 y: ry,
                 width: rwidth,
                 height: rheight
-                
             })
         }
 
@@ -864,7 +892,30 @@ export default class FlowMap extends React.Component{
 
     }
 
-    getData(){
+    data(node,map){
+        let data = this._data,
+        id = node['id'] || node
+        
+        if(!data[id]){
+            data[id]={}
+        }
+
+        if(map){
+            data[id] = Object.assign(data[id], map)
+        }
+
+        return data[id]
+    }
+
+    clearData(node){
+        let data = this._data,
+        id = node['id'] || node
+
+        delete data[id]
+    }
+
+    //序列化
+    serialize(){
         let nodes = this.nodes,
         arrows = this.arrows,
         containers = this.containers
@@ -877,21 +928,25 @@ export default class FlowMap extends React.Component{
         let nodesData = {}, arrowsData = {}, containersData = {}
         for(let key in nodes){
             let node = nodes[key]
+            let nodeData = this.data(node)
             nodesData[key] = {
                 id: node['id'],
                 position: node['position'],
-                title: node['title'],
-                _pid:node.parent['_type'] == "containerContent"?node.parent.parent.id:parent.id,
-                _nodeType:node['_nodeType'],
-                _data: node['_data']
+              //  title: nodeData['title'],
+              //  _pid:this.data(node.parent)['type'] == "containerContent"?node.parent.parent.id:parent.id,
+              //  _nodeType:nodeData['nodeType'],
+              //  _data: nodeData['data']
             }
+            this.data(node,{
+                pid:this.data(node.parent)['type'] == "containerContent"?node.parent.parent.id:parent.id
+            })
         }
 
         for(let key in arrows){
             let arrow = arrows[key]
             arrowsData[key] = {
                 id: arrow['id'],
-                _data: arrow['_data']
+               // _data: arrow['_data']
             }
         }
 
@@ -900,49 +955,46 @@ export default class FlowMap extends React.Component{
             containersData[key] = {
                 id: container.id,
                 position: container.position,
-                _containerType: container['_containerType'],
-                _data: container['_data']
             }
         }
 
         data['nodes'] = nodesData
         data['arrows'] = arrowsData
         data['containers'] = containersData
-        
-        return data;
+        data['_data'] = this._data
 
+        return data;
     }
 
-    setData(data){
+    //反序列化
+    deserialization(data){
         const {position, scale, containers, nodes, arrows} = data
         this.resetPage({}, ()=>{
             for(let key in containers){
                 let container =  containers[key]
-            // console.log(container)
-                this.addContainer(container['_containerType'], container.position,{
-                    id:container.id,
-                    _data:container['_data']
-                })
+                let containerData = this.data(container['id'])
+                this.addContainer(containerData['containerType'], container.position,Object.assign(container
+                ,containerData))
             }
 
             for(let key in nodes){
                 let node = nodes[key]
-                let container = this.containers[node['_pid']]
-                this.addNode(node['_nodeType'],node['position'],{
-                    title:node['title'],
-                    id:node['id'],
-                    _data:node['_data']
-                },container&&container.childAt(1))
-                
+                let nodeData = this.data(node['id'])
+                let container = this.containers[nodeData['pid']]
+                this.addNode(nodeData['nodeType'],node['position'],Object.assign(
+                 node
+                ,nodeData),container&&container.childAt(1))
             }
 
             for(let key in this.containers){
-                
+
                 this.refreshContainerReact(this.containers[key])
+
             }
 
             for(let key in arrows){
                 let arrow = arrows[key]
+                let arrowData = this.data(arrow['id'])
                 let ids = arrow.id.split('_')
                 let startNode = this.nodes[ids[1]],
                 endNode = this.nodes[ids[2]]
@@ -953,10 +1005,9 @@ export default class FlowMap extends React.Component{
                 },{
                     x: endNode.position[0],
                     y: endNode.position[1]
-                },{
-                    id:arrow['id'],
-                    _data:arrow['_data']
-                })
+                },Object.assign({
+                    id:arrow['id']
+                },arrowData))
 
                 this.refreshArrow(arrowGroup)
             }
@@ -1004,10 +1055,15 @@ export default class FlowMap extends React.Component{
         this.rootGroup = new Group(Object.assign({
             position: [0,0]
            ,id: new Date().getTime()
-           ,_type: 'rootGroup' 
         }))
+
+        this.data(this.rootGroup,{
+            type: 'rootGroup' 
+        })
+
         this.zr.add(this.rootGroup)
     }
+
     //比例操作
     zoom(scale){
         let {maxScale,minScale} = this.status
@@ -1063,7 +1119,8 @@ export default class FlowMap extends React.Component{
                 continue
             }
             let node = nodes[key]
-            if(node['title'] && node['title'].indexOf(keyword) != -1&&(this.status.activeGroup == null || this.status.activeGroup.id != node.id)){
+            let nodeTitle = this.data(node)['title']
+            if(nodeTitle && nodeTitle.indexOf(keyword) != -1&&(this.status.activeGroup == null || this.status.activeGroup.id != node.id)){
                 this.setActiveNode(node)
                 this.setState({
                     searchIndex:index
@@ -1102,7 +1159,7 @@ export default class FlowMap extends React.Component{
 
     //工具栏，显示json
     setTxtData(){
-        let data = this.getData()
+        let data = this.serialize()
         this.setState({
             dataStr: JSON.stringify(data, null, 10),
             dataStrValid:true
@@ -1114,7 +1171,7 @@ export default class FlowMap extends React.Component{
     createNode(type, position){
         let node = this.addNode(type, position)
         let {activeGroup} = this.status
-        if(activeGroup && activeGroup['_type'] == 'container'){
+        if(activeGroup && this.data(activeGroup)['type'] == 'container'){
             this.bindNodeToContainer(activeGroup, node)
         }
     }
@@ -1123,7 +1180,7 @@ export default class FlowMap extends React.Component{
     createContainer(type, position){
         let group = this.addContainer(type, position)
         let {activeGroup} = this.status
-        if(activeGroup && activeGroup['_type'] == 'container'){
+        if(activeGroup && this.data(activeGroup)['type'] == 'container'){
             this.bindNodeToContainer(activeGroup, group)
         }
     }
@@ -1138,14 +1195,12 @@ export default class FlowMap extends React.Component{
     //右键菜单，删除
     deleteHandle(e){
         let {activeGroup} = this.status
-        if(activeGroup['_type'] == 'node'){
+        if(this.data(activeGroup)['type'] == 'node'){
             this.deleteNode(activeGroup)
-        }else if(activeGroup['_type'] == 'container'){
+        }else if(this.data(activeGroup)['type'] == 'container'){
             this.deleteContainer(activeGroup)
         }
     }
-
-    
 
     deleteNode(node){
         let arrowIds = this.findArrowIdsByNode(node),
@@ -1154,10 +1209,12 @@ export default class FlowMap extends React.Component{
         arrowIds.map((id,index)=>{
             let arrow = arrows[id]
             arrow.parent.remove(arrow)
+            this.clearData(arrow)
             delete arrows[id]
         })
 
         delete this.nodes[node['id']]
+        this.clearData(node)
         node.parent.remove(node)
     }
 
@@ -1168,6 +1225,7 @@ export default class FlowMap extends React.Component{
             this.deleteNode(child)
         })
         delete this.containers[container['id']]
+        this.clearData(container)
         container.parent.remove(container)
     }
 
