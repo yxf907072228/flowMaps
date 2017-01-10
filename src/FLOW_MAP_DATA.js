@@ -18,6 +18,7 @@ export const MENU_TYPES = [
     {key:"addGroup",title:"新建组",targets:{node:false,rootGroup:true,container:false}}
    ,{key:"addNode",title:"新建节点",targets:{node:false,rootGroup:true,container:true}}
    ,{key:"addArrow",title:"连接",targets:{node:true,rootGroup:false,container:false}}
+   ,{key:"delete",title:"删除",targets:{node:true,rootGroup:false,container:true}}
    ,{key:"reset",title:"清空画布"}
    ,{key:"zoomin",title:"放大"}
    ,{key:"zoomout",title:"缩小"}
@@ -69,27 +70,32 @@ export const NODE_TYPES = {
 }
 
 export const GROUP_TYPES = {
-    group1:{
-        title:'组一',
-        style:{
+    group1: {
+        title: '组一',
+        width: 200,
+        height: 100,
+        style: {
             lineWidth: 3
-           
         }
     },
     group2:{
-        title:'组二'
-       ,shape:'image'
-       ,image:cloudImage
+        title: '组二',
+        shape: 'image',
+        image: cloudImage,
+        width: 300,
+        height: 150
     },
     group3:{
-        title:'组三',
-        style:{
+        title: '组三',
+        width: 150,
+        height: 200,
+        style: {
             lineWidth: 5,
             lineDash: [10, 10],
-            stroke:"orange"
+            stroke: "orange"
         },
-        animateTime:1000,
-        animateOption:{
+        animateTime: 1000,
+        animateOption: {
             lineDashOffset: -20
         }
     }
@@ -98,6 +104,6 @@ export const GROUP_TYPES = {
 export const NODE_TYPES_LENGTH = 4
 
 export const NODE_INFO = {
-    width:45
-   ,height:50
+    width: 45
+   ,height: 50
 }
