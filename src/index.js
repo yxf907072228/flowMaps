@@ -152,7 +152,7 @@ export default class FlowMap extends React.Component{
          document.body.addEventListener("mousemove",(e)=>{
              if(dragTarget){
                   let {scale} = this.status
-                  if( this.data(dragTarget) == 'rootGroup' ){
+                  if( this.data(dragTarget)['type'] == 'rootGroup' ){
                       dragTarget.position = [
                         startX+e.pageX-dStartX,
                         startY+e.pageY-dStartY
@@ -949,18 +949,18 @@ export default class FlowMap extends React.Component{
 
     //反序列化
     deserialization(data){
-        const {position, scale, containers, nodes, arrows} = data
+        const {position, scale, containers, nodes, arrows, _data} = data
         this.resetPage({}, ()=>{
             for(let key in containers){
                 let container =  containers[key]
-                let containerData = this.data(container['id'])
+                let containerData = _data[container['id']]
                 this.addContainer(containerData['containerType'], container.position,Object.assign(container
                 ,containerData))
             }
 
             for(let key in nodes){
                 let node = nodes[key]
-                let nodeData = this.data(node['id'])
+                let nodeData = _data[node['id']]
                 let container = this.containers[nodeData['pid']]
                 this.addNode(nodeData['nodeType'],node['position'],Object.assign(
                  node
@@ -975,7 +975,7 @@ export default class FlowMap extends React.Component{
 
             for(let key in arrows){
                 let arrow = arrows[key]
-                let arrowData = this.data(arrow['id'])
+                let arrowData = _data[arrow['id']]
                 let ids = arrow.id.split('_')
                 let startNode = this.nodes[ids[1]],
                 endNode = this.nodes[ids[2]]
