@@ -106,13 +106,8 @@ export default class FlowMap extends React.Component{
         let node2=this.addNode('zzuzhi',[499,200])
         let node3=this.addNode('zzuzhi',[199,100])
 
-
-
         let arrow1=this.addArrow()
-
         let arrow2=this.addArrow()
-
-        
 
         this.addRelation(node1,node2,arrow1)
         this.addRelation(node2,node3,arrow2)
@@ -455,30 +450,6 @@ export default class FlowMap extends React.Component{
         }
         return true
     }
-
-
-    clearPaper(){
-        this.zr.clear()
-        
-        this.status = {
-            activeNode:null
-           ,arrowTargetNode:null
-           ,activeArrow:null
-           ,dragging:false
-        }
-        this.nodes = {
-            
-        }
-        this.arrows = {
-            
-        }
-        this.containers = {
-
-        }
-        this._data = {
-
-        }
-    }
     
     addGroup(opt,parent){
         var group = new Group(Object.assign({
@@ -819,11 +790,13 @@ export default class FlowMap extends React.Component{
 
     connectActiveArrow(){
         if(this.status.arrowTargetNode){
+            this.clearData(this.status.activeArrow)
             this.addRelation(this.status.activeGroup,this.status.arrowTargetNode,this.status.activeArrow)
             this.status.activeArrow = null
             this.setActiveNode(this.status.arrowTargetNode)
             this.resetArrowTargetNode()
         }else{
+            this.clearData(this.status.activeArrow)
             this.rootGroup.remove(this.status.activeArrow)
             delete this.arrows[this.status.activeArrow.id]
             this.status.activeArrow = null
@@ -842,6 +815,11 @@ export default class FlowMap extends React.Component{
         let rect = container.childAt(0),
         content = container.childAt(1),
         title = container.childAt(2);
+
+        //空的容器，不作处理，保持默认形状
+        if(content.children().length == 0){
+            return
+        }
 
         let brect = content.getBoundingRect()
         let rx = brect.x-10,
@@ -1021,13 +999,15 @@ export default class FlowMap extends React.Component{
 
     //######################所有工具栏点击操作################################
     //工具栏，清空页面
-    resetPage(option={},callback){
+    resetPage(option = {}, callback){
         this.zr.clear()
-        this.nodes= {}
-        this.arrows= {}
-        this.containers= {}
+        this.nodes = {}
+        this.arrows = {}
+        this.containers = {}
+        this.clearData(this.rootGroup)
+        this.rootGroup = null
 
-        this.status={
+        this.status = {
             hoverGroup: null,
             maxIndex: 99,
             minIndex: 1,
@@ -1041,9 +1021,9 @@ export default class FlowMap extends React.Component{
            // config:this.props.config
            //,checkBtn:""
            //,keyword:"" //搜索关键字
-            searchIndex:0
-           ,dataStr:'' //整张图序列化之后的字符串
-           ,dataStrValid:true
+            searchIndex: 0
+           ,dataStr: '' //整张图序列化之后的字符串
+           ,dataStrValid: true
         },()=>{
             this._initRootGroup()
             callback&&callback()
@@ -1169,20 +1149,38 @@ export default class FlowMap extends React.Component{
     //######################所有右键菜单操作################################
     //右键菜单栏，创建节点操作
     createNode(type, position){
-        let node = this.addNode(type, position)
-        let {activeGroup} = this.status
-        if(activeGroup && this.data(activeGroup)['type'] == 'container'){
-            this.bindNodeToContainer(activeGroup, node)
-        }
+        this.refs.rightmenu.hideMenu()
+        setTimeout(()=>{
+            let title = window.prompt("请输入节点名称:")
+            if(title == null){
+                return;
+            }
+            let node = this.addNode(type, position, {
+                title
+            })
+            let {activeGroup} = this.status
+            if(activeGroup && this.data(activeGroup)['type'] == 'container'){
+                this.bindNodeToContainer(activeGroup, node)
+            }
+        },100)
     }
 
     //创建组操作
     createContainer(type, position){
-        let group = this.addContainer(type, position)
-        let {activeGroup} = this.status
-        if(activeGroup && this.data(activeGroup)['type'] == 'container'){
-            this.bindNodeToContainer(activeGroup, group)
-        }
+        this.refs.rightmenu.hideMenu()
+        setTimeout(()=>{
+            let title = window.prompt("请输入组名称:")
+            if(title == null){
+                return;
+            }
+            let group = this.addContainer(type, position, {
+                title
+            })
+            let {activeGroup} = this.status
+            if(activeGroup && this.data(activeGroup)['type'] == 'container'){
+                this.bindNodeToContainer(activeGroup, group)
+            }
+        },100)
     }
 
     //右键菜单 连接

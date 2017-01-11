@@ -29,17 +29,21 @@ export default class RightMenu extends React.Component{
 		})
 	}
 
-	showMenu(opts){
+	showMenu(opts,callback){
 		this.setState(Object.assign({
 			show:true
 		   ,indexItem:0
-		},opts))
+		},opts),()=>{
+			callback&&callback()
+		})
 	}
 	
-	hideMenu(){
+	hideMenu(callback){
 		this.setState({
 			show:false
 		   ,indexItem:0
+		},()=>{
+			callback&&callback()
 		})
 	}
 /*
