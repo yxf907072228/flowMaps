@@ -18,6 +18,8 @@ export const MENU_TYPES = [
     {key:"addGroup",title:"新建组",targets:{node:false,rootGroup:true,container:false}}
    ,{key:"addNode",title:"新建节点",targets:{node:false,rootGroup:true,container:true}}
    ,{key:"addArrow",title:"连接",targets:{node:true,rootGroup:false,container:false}}
+   ,{key:"rename",title:"重命名",targets:{node:true,rootGroup:false,container:true}}
+   
    ,{key:"delete",title:"删除",targets:{node:true,rootGroup:false,container:true}}
    ,{key:"reset",title:"清空画布"}
    ,{key:"zoomin",title:"放大"}

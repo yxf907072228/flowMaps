@@ -413,6 +413,9 @@ export default class FlowMap extends React.Component{
             case 'delete':
                 this.deleteHandle()
             ;break;
+            case 'rename':
+                this.renameHandle(e)
+            ;break;
 			default:;
             
 		}
@@ -656,7 +659,7 @@ export default class FlowMap extends React.Component{
             let nodeData = this.data(group,{
                 type: 'node',
                 nodeType: type,
-                title: option['title'] || NODE_TYPES[type]['title'],
+                title: option['title'] != null ?option['title']:NODE_TYPES[type]['title'],
             })
 
             var node=new ImageShape({
@@ -719,7 +722,7 @@ export default class FlowMap extends React.Component{
         let containerData = this.data(containerGroup,{
             type:'container',
             containerType:type,
-            title:option.title || GROUP_TYPES[type]['title']
+            title:option.title != null?option.title:GROUP_TYPES[type]['title']
         })
 
         let containerRect
@@ -775,7 +778,7 @@ export default class FlowMap extends React.Component{
             style:{
                 x: GROUP_TYPES[type]['width']/2,
                 y: GROUP_TYPES[type]['height']+15,
-                text: option.title || GROUP_TYPES[type]['title'],
+                text: option.title,
                 textAlign:'center',
                 font:'bolder 14px sans-serif'
             }
@@ -1151,7 +1154,7 @@ export default class FlowMap extends React.Component{
     createNode(type, position){
         this.refs.rightmenu.hideMenu()
         setTimeout(()=>{
-            let title = window.prompt("请输入节点名称:")
+            let title = window.prompt("请输入节点名称:","新建节点")
             if(title == null){
                 return;
             }
@@ -1169,7 +1172,7 @@ export default class FlowMap extends React.Component{
     createContainer(type, position){
         this.refs.rightmenu.hideMenu()
         setTimeout(()=>{
-            let title = window.prompt("请输入组名称:")
+            let title = window.prompt("请输入组名称:","新建组")
             if(title == null){
                 return;
             }
@@ -1249,6 +1252,44 @@ export default class FlowMap extends React.Component{
                 y: divi(endPosition[1], scale) + (endPosition[1]>startPosition[1]?-5:5),
             }
         }
+    }
+
+    //工具栏方法 重命名
+    renameHandle(e){
+        this.refs.rightmenu.hideMenu()
+        setTimeout(()=>{
+            let activeGroup = this.status.activeGroup
+            let activeGroupData = this.data(activeGroup)
+            let title = window.prompt("请输入新的名字", activeGroupData['title'])
+            if(title == null){
+                return
+            }
+            if(activeGroupData['type'] == 'container'){
+                this.renameContainer(activeGroup, title)
+            }else if(activeGroupData['type'] == 'node'){
+                this.renameNode(activeGroup, title)
+            }
+        },100)
+    }
+
+    //给组重命名
+    renameContainer(container, title){
+        let titleNode = container.childAt(2)
+        titleNode.style.text = title
+        this.data(container,{
+            title
+        })
+        titleNode.dirty(true)
+    }
+
+    //给节点重命名
+    renameNode(node, title){
+        let titleNode = node.childAt(1)
+        titleNode.style.text = title
+        this.data(node,{
+            title
+        })
+        titleNode.dirty(true)
     }
 
 }
