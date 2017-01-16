@@ -2,9 +2,10 @@ var path = require('path')
 var webpack = require('webpack')
 
 module.exports = {
-	devtool: 'cheap-source-map',
+	devtool: 'eval',
+	devtool: 'eval',
 	entry: {
-		app: './demos/demo',
+		app: './app',
 		vendor: ['react', 'react-dom']
 	},
 	output: {
@@ -38,20 +39,14 @@ module.exports = {
 	],
 	module: {
 		loaders: [
-			{
-				test: /\.(js|jsx)$/,
-				loader: 'babel',
-				exclude: /node_modules/
-			},
-      {
-        test: /\.less/,
-        loaders: ['style', 'css', 'less'],
-        include: __dirname
-      },
-      {
-        test: /\.html$/,
-        loader: 'file?name=[name].[ext]'
-      },{test: /\.(jpg|png)$/, loader: "url?limit=8192"}
+			 { test: /\.css/, loader: 'style!css' },
+            { test: /\.less$/, loader: 'style!css!less' },
+            { test: /\.(js|jsx)$/, loaders: [ 'babel'], exclude: /node_modules/, include: __dirname },
+            { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
+            { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
+            { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },
+            { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml' },
+            { test: /\.(png|jpg|gif)$/, loader: 'url?limit=100000' }
 		]
 	}
 }

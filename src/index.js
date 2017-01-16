@@ -97,26 +97,14 @@ export default class FlowMap extends React.Component{
         })
 
         this.zr.add(this.rootGroup)
-        // this.test();
-     }
-
+        //this.test();
+}
+/*
      test(){
-        let _t=new Date().getTime()
-        let node1=this.addNode('zuzhi',[59,500])
-        let node2=this.addNode('zzuzhi',[499,200])
-        let node3=this.addNode('zzuzhi',[199,100])
-
-        let arrow1=this.addArrow()
-        let arrow2=this.addArrow()
-
-        this.addRelation(node1,node2,arrow1)
-        this.addRelation(node2,node3,arrow2)
+         let data = {"position":[40,-44],"scale":[1,1],"nodes":{"1484597313097":{"id":1484597313097,"position":[741,180]},"1484597328845":{"id":1484597328845,"position":[13,55]},"1484597336002":{"id":1484597336002,"position":[131,121]},"1484597339675":{"id":1484597339675,"position":[225,56]},"1484597371321":{"id":1484597371321,"position":[423,-45]},"1484597377575":{"id":1484597377575,"position":[372,-162]},"1484597382643":{"id":1484597382643,"position":[379,71]},"1484597393236":{"id":1484597393236,"position":[94,-34]},"1484597412771":{"id":1484597412771,"position":[127,237]},"1484597474409":{"id":1484597474409,"position":[74,81]},"1484597487377":{"id":1484597487377,"position":[168,82]},"1484597508984":{"id":1484597508984,"position":[170,153]},"1484597514533":{"id":1484597514533,"position":[169,15]},"1484597521571":{"id":1484597521571,"position":[75,153]},"1484597528135":{"id":1484597528135,"position":[73,15]},"1484597534566":{"id":1484597534566,"position":[257,83]},"1484597664895":{"id":1484597664895,"position":[521,240]},"1484597669386":{"id":1484597669386,"position":[523,63]},"1484597673117":{"id":1484597673117,"position":[895,183]},"1484597678698":{"id":1484597678698,"position":[786,72]},"1484597749014":{"id":1484597749014,"position":[676,325]}},"arrows":{"_1484597328845_1484597336002_":{"id":"_1484597328845_1484597336002_"},"_1484597336002_1484597339675_":{"id":"_1484597336002_1484597339675_"},"_1484597336002_1484597313097_":{"id":"_1484597336002_1484597313097_"},"_1484597377575_1484597393236_":{"id":"_1484597377575_1484597393236_"},"_1484597371321_1484597393236_":{"id":"_1484597371321_1484597393236_"},"_1484597382643_1484597393236_":{"id":"_1484597382643_1484597393236_"},"_1484597412771_1484597393236_":{"id":"_1484597412771_1484597393236_"},"_1484597336002_1484597412771_":{"id":"_1484597336002_1484597412771_"},"_1484597528135_1484597514533_":{"id":"_1484597528135_1484597514533_"},"_1484597514533_1484597534566_":{"id":"_1484597514533_1484597534566_"},"_1484597474409_1484597487377_":{"id":"_1484597474409_1484597487377_"},"_1484597521571_1484597508984_":{"id":"_1484597521571_1484597508984_"},"_1484597508984_1484597534566_":{"id":"_1484597508984_1484597534566_"},"_1484597487377_1484597534566_":{"id":"_1484597487377_1484597534566_"},"_1484597534566_1484597393236_":{"id":"_1484597534566_1484597393236_"},"_1484597313097_1484597664895_":{"id":"_1484597313097_1484597664895_"},"_1484597313097_1484597669386_":{"id":"_1484597313097_1484597669386_"},"_1484597313097_1484597673117_":{"id":"_1484597313097_1484597673117_"},"_1484597313097_1484597678698_":{"id":"_1484597313097_1484597678698_"},"_1484597749014_1484597313097_":{"id":"_1484597749014_1484597313097_"},"_1484597534566_1484597313097_":{"id":"_1484597534566_1484597313097_"},"_1484597393236_1484597313097_":{"id":"_1484597393236_1484597313097_"}},"containers":{"2319":{"id":2319,"position":[93,57]},"3309":{"id":3309,"position":[792,573]},"7726":{"id":7726,"position":[53,456]}},"_data":{"2319":{"title":"新建组","type":"container","containerType":"group1","id":2319},"3309":{"title":"新建组","type":"container","containerType":"group2","id":3309},"7726":{"title":"新建组","type":"container","containerType":"group3"},"1484597313097":{"title":"新建节点","type":"node","nodeType":"fwql","id":1484597313097},"2319_c":{"type":"containerContent"},"1484597328845":{"title":"新建节点","type":"node","nodeType":"fwql","pid":2319,"id":1484597328845},"2319_r":{},"1484597336002":{"title":"新建节点","type":"node","nodeType":"jcfwl","pid":2319,"id":1484597336002},"1484597339675":{"title":"新建节点","type":"node","nodeType":"xnpzx","pid":2319,"id":1484597339675},"_1484597328845_1484597336002_":{"type":"arrow"},"_1484597336002_1484597339675_":{"type":"arrow"},"_1484597336002_1484597313097_":{"type":"arrow"},"3309_r":{"type":"image"},"3309_c":{"type":"containerContent"},"1484597371321":{"title":"新建节点","type":"node","nodeType":"jcfwl","pid":3309,"id":1484597371321},"1484597377575":{"title":"新建节点","type":"node","nodeType":"jcfwl","pid":3309,"id":1484597377575},"1484597382643":{"title":"新建节点","type":"node","nodeType":"jcfwl","pid":3309,"id":1484597382643},"1484597393236":{"title":"新建节点","type":"node","nodeType":"wljhj","pid":3309,"id":1484597393236},"1484597412771":{"title":"新建节点","type":"node","nodeType":"wljhj","pid":2319,"id":1484597412771},"_1484597377575_1484597393236_":{"type":"arrow"},"_1484597371321_1484597393236_":{"type":"arrow"},"_1484597382643_1484597393236_":{"type":"arrow"},"_1484597412771_1484597393236_":{"type":"arrow"},"_1484597336002_1484597412771_":{"type":"arrow"},"1484597438841":{"type":"rootGroup"},"7726_c":{"type":"containerContent"},"1484597474409":{"title":"机柜一","type":"node","nodeType":"xnpzx","pid":7726},"7726_r":{},"1484597487377":{"title":"机柜二","type":"node","nodeType":"xnpzx","pid":7726},"1484597498417":{},"1484597508984":{"title":"机柜三","type":"node","nodeType":"xnpzx","pid":7726},"1484597514533":{"title":"机柜四","type":"node","nodeType":"xnpzx","pid":7726},"1484597521571":{"title":"机柜五","type":"node","nodeType":"xnpzx","pid":7726},"1484597528135":{"title":"机柜六","type":"node","nodeType":"xnpzx","pid":7726},"1484597534566":{"title":"机柜七","type":"node","nodeType":"xnpzx","pid":7726},"1484597664895":{"title":"新建节点","type":"node","nodeType":"jcfwl"},"1484597669386":{"title":"新建节点","type":"node","nodeType":"jcfwl"},"1484597673117":{"title":"新建节点","type":"node","nodeType":"jcfwl"},"1484597678698":{"title":"新建节点","type":"node","nodeType":"jcfwl"},"1484597749014":{"title":"新建节点","type":"node","nodeType":"jcfwl"}}}
+         this.deserialization(data)
         
-        let container1=this.addContainer(0,[100,200])
-
-        this.bindNodeToContainer(container1,node2)
-        this.bindNodeToContainer(container1,node3)
-     }
+}*/
 
      _initEvents(){
          let dStartX,
@@ -143,11 +131,7 @@ export default class FlowMap extends React.Component{
             startX = dragTarget['position'][0]
             startY = dragTarget['position'][1]
          })
-         document.body.addEventListener("mouseup",()=>{
-             if(dragTarget){
-                 dragTarget = null
-             }
-         })
+         
 
          document.body.addEventListener("mousemove",(e)=>{
              if(dragTarget){
@@ -189,8 +173,16 @@ export default class FlowMap extends React.Component{
              }
          })
 
+         document.body.addEventListener("mouseup",()=>{
+             if(dragTarget){
+                 this.onDragEnd(dragTarget)
+                 dragTarget = null
+             }
+         })
+
          document.body.addEventListener("mouseleave",()=>{
              if(dragTarget){
+                 this.onDragEnd(dragTarget)
                  dragTarget = null
              }
          })
@@ -656,11 +648,11 @@ export default class FlowMap extends React.Component{
                  }
             },option),parent)
 
-            let nodeData = this.data(group,{
+            let nodeData = this.data(group,Object.assign({}, option, {
                 type: 'node',
                 nodeType: type,
                 title: option['title'] != null ?option['title']:NODE_TYPES[type]['title'],
-            })
+            }))
 
             var node=new ImageShape({
                 position: [0, 0],
@@ -719,15 +711,16 @@ export default class FlowMap extends React.Component{
             }
         },option))
 
-        let containerData = this.data(containerGroup,{
+        let containerData = this.data(containerGroup,Object.assign(option,{
             type:'container',
             containerType:type,
             title:option.title != null?option.title:GROUP_TYPES[type]['title']
-        })
+        }))
 
         let containerRect
         if(GROUP_TYPES[type]['shape'] == 'image'){
             containerRect=new ImageShape({
+                    id: containerGroup.id+"_r",
                     position: [0, 0],
                     style: Object.assign({
                         x:0,
@@ -745,6 +738,7 @@ export default class FlowMap extends React.Component{
 
         }else{
             containerRect = new RectShape({
+                id: containerGroup.id+"_r",
                 shape:{
                     x:0,
                     y:0,
@@ -767,6 +761,7 @@ export default class FlowMap extends React.Component{
 
 
         let contentGroup = this.addGroup({
+            id: containerGroup.id+"_c",
             position: [0,0]
         })
 
@@ -882,7 +877,7 @@ export default class FlowMap extends React.Component{
         }
 
         if(map){
-            data[id] = Object.assign(data[id], map)
+            data[id] = Object.assign({}, data[id], map)
         }
 
         return data[id]
@@ -954,7 +949,7 @@ export default class FlowMap extends React.Component{
             for(let key in containers){
                 let container =  containers[key]
                 let containerData = _data[container['id']]
-                this.addContainer(containerData['containerType'], container.position,Object.assign(container
+                this.addContainer(containerData['containerType'], container.position,Object.assign({id: container.id}
                 ,containerData))
             }
 
@@ -963,7 +958,7 @@ export default class FlowMap extends React.Component{
                 let nodeData = _data[node['id']]
                 let container = this.containers[nodeData['pid']]
                 this.addNode(nodeData['nodeType'],node['position'],Object.assign(
-                 node
+                 {id:node.id}
                 ,nodeData),container&&container.childAt(1))
             }
 
@@ -1292,4 +1287,10 @@ export default class FlowMap extends React.Component{
         titleNode.dirty(true)
     }
 
+    //#######################所有监听事件#######################
+    
+    //拖拽结束监听事件
+    onDragEnd(dragTarget){
+        //有待实现
+    }
 }

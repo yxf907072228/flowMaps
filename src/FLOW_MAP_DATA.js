@@ -1,17 +1,9 @@
-import zuzhi from '../images/zuzhi.png'
-import zuzhi_no from '../images/zuzhi_no.png'
-import zizuzhi from '../images/zizuzhi.png'
-import zizuzhi_no from '../images/zizuzhi_no.png'
 import para from '../images/para.png'
-import para_no from '../images/para_no.png'
-import guanli from '../images/guanli.png'
-import money from '../images/money.png'
-import user from '../images/user.png'
-import chaosuan from '../images/chaosuan.png'
-
-import chaosuan_false from '../images/chaosuan_false.png'
-import chaosuan_no from '../images/chaosuan_no.png'
-
+import fwql from '../images/fwql.png'
+import jcfwl from '../images/jcfwl.png'
+import xnpzx from '../images/xnpzx.png'
+import wljhj from '../images/wljhj.png'
+import zydd from '../images/zydd.png'
 import cloudImage from '../images/cloud_bk.png'
 
 export const MENU_TYPES = [
@@ -62,18 +54,16 @@ export const TOOLBAR_TYPES = [
 ]
 
 export const NODE_TYPES = {
-    zuzhi:{icon:zuzhi,level:1,title:'节点一'},
-    zzuzhi:{icon:zizuzhi,level:2,title:'节点二'},
-    bx:{icon:para ,level:3,title:'节点三'},
-    cs:{
-     icon:chaosuan
-    ,icon_false:chaosuan_false
-    ,icon_no:chaosuan_no,level:4,title:'节点四'}
+    fwql:{icon:fwql,level:1,title:'机柜'},
+    jcfwl:{icon:jcfwl,level:2,title:'数据库'},
+    xnpzx:{icon:xnpzx,level:1,title:'基站服务器'},
+    wljhj:{icon:wljhj,level:2,title:'网络交换机'},
+    zydd:{icon:zydd,level:1,title:'路由器'}
 }
 
 export const GROUP_TYPES = {
     group1: {
-        title: '组一',
+        title: '用户组',
         width: 200,
         height: 100,
         style: {
@@ -81,14 +71,14 @@ export const GROUP_TYPES = {
         }
     },
     group2:{
-        title: '组二',
+        title: '云平台',
         shape: 'image',
         image: cloudImage,
         width: 300,
         height: 150
     },
     group3:{
-        title: '组三',
+        title: '基站',
         width: 150,
         height: 200,
         style: {
