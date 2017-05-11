@@ -140,8 +140,7 @@ export default class FlowMap extends React.Component{
                       dragTarget.position = [
                         startX+e.pageX-dStartX,
                         startY+e.pageY-dStartY
-                    ]
-                    console.log(dragTarget.position)
+                      ]
                   }else{
                       dragTarget.position = [
                         startX+divi(e.pageX-dStartX,scale),
@@ -469,6 +468,7 @@ export default class FlowMap extends React.Component{
     }
 
     addArrow(start={x:0,y:0},end={x:0,y:0},option){
+        let {ARROW_INFO} = this.state.config
         let line = new LineShape({
                 shape: {
                     x1: start.x,
@@ -479,6 +479,7 @@ export default class FlowMap extends React.Component{
                 style:{
                    // text:123321,
                     //textRotation:0.5
+                    [ARROW_INFO.color&&'stroke']:ARROW_INFO.color
                 }
         });
         let arrowPath=this.getArrowPath(start,end,6)
@@ -486,7 +487,7 @@ export default class FlowMap extends React.Component{
         var group = this.addGroup(Object.assign({
             zlevel: -1
         },option))
-
+        ARROW_INFO.color&&(path.style.fill=ARROW_INFO.color)
         this.data(group,{
             type: 'arrow'
         })
@@ -514,7 +515,8 @@ export default class FlowMap extends React.Component{
         let {scale} = this.status
         let {NODE_INFO} = this.state.config
         let nodeWidth = NODE_INFO['width'],
-        nodeHeight = NODE_INFO['height']
+        nodeHeight = NODE_INFO['height'];
+        let r =Math.sqrt(nodeWidth*nodeWidth+nodeHeight*nodeHeight )
 
         if(start ==null || end == null){
             let ids = group['id'].split("_")
@@ -527,8 +529,8 @@ export default class FlowMap extends React.Component{
             let yLen = endOfset[1] - startOfset[1]
             let zLen= Math.sqrt(Math.pow(yLen,2) + Math.pow(xLen,2))
 
-            let xLow = nodeWidth*xLen/zLen/2
-            let yLow = nodeHeight*yLen/zLen/2
+            let xLow = r*xLen/zLen/2
+            let yLow = r*yLen/zLen/2
 
             start = {
                x : divi( startOfset[0],scale) + NODE_INFO['width']/2 + xLow,
@@ -660,7 +662,7 @@ export default class FlowMap extends React.Component{
                 style: {
                     x: 0,
                     y: 0,
-                    image: NODE_TYPES[type]['icon'],
+                    image: option.icon || NODE_TYPES[type]['icon'],
                     width: NODE_INFO['width'],
                     height: NODE_INFO['height'],
                     color: '#9F9F9F',
@@ -942,8 +944,9 @@ export default class FlowMap extends React.Component{
         return data;
     }
 
+    //warn:这个方法是异步执行，但是没有提供回调，有待改造
     //反序列化
-    deserialization(data){
+    deserialization(data, callback){
         const {position, scale, containers, nodes, arrows, _data} = data
         this.resetPage({}, ()=>{
             for(let key in containers){
@@ -991,6 +994,7 @@ export default class FlowMap extends React.Component{
             this.rootGroup.position = position
             this.rootGroup.scale = scale || [1,1]
             this.status.scale = scale[0]
+            callback&&callback()
         })
     }
 
@@ -1199,6 +1203,12 @@ export default class FlowMap extends React.Component{
     }
 
     deleteNode(node){
+        if(typeof(node) == 'string'){
+            node = this.nodes[node]
+        }
+        if(!node){
+            return
+        }
         let arrowIds = this.findArrowIdsByNode(node),
         arrows = this.arrows
         

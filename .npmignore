@@ -1,6 +1,13 @@
 node_modules/
+demo/
+dist/
+server.js
+webpack.config.js
+index.html
+.babelrc
 .DS_Store
 *.log
+*.md
 .gitignore
 .git/
 src/

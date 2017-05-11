@@ -96,6 +96,11 @@ export const GROUP_TYPES = {
 export const NODE_TYPES_LENGTH = 4
 
 export const NODE_INFO = {
-    width: 45
-   ,height: 50
+    width: 100
+   ,height: 60
+}
+
+
+export const ARROW_INFO = {
+    color:'#666'
 }
