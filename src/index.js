@@ -682,7 +682,8 @@ export default class FlowMap extends React.Component{
                 x: NODE_INFO['width']/2,
                 y: NODE_INFO['height']+15,
                 text: nodeData['title'],
-                textAlign:'center'
+                textAlign:'center',
+                fill: NODE_INFO['fontColor'] || 'black'
             }
         })
         

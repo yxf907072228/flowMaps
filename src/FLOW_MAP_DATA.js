@@ -98,6 +98,7 @@ export const NODE_TYPES_LENGTH = 4
 export const NODE_INFO = {
     width: 100
    ,height: 60
+   ,fontColor: 'red'
 }
 
 
