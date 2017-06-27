@@ -1,7 +1,7 @@
 import React from 'react'
 import classNames from 'classnames'
 import renderToolBar from '../toolbar'
-import RightMenu from '../rightmenu'
+import RightMenu from '../rightMenu'
 
 import '../../styles/flowMap.less'
 
