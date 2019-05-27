@@ -1,5 +1,6 @@
 # flowMap
-    工作流  思维导向图  关系图的React解决方案
+    1.工作流  思维导向图  关系图解决方案
+    2.基于zrender实现，可作为echarts扩展
 # 先上个demo
 [http://www.dmybz.com:3000/](http://www.dmybz.com:3000/)
 # demo运行步骤
