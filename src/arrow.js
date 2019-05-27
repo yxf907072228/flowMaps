@@ -20,6 +20,7 @@ export function createArrow(start,end){
     group.add(line)
     group.add(path)
     this.zr.add(group)
+    
     return group
 }
 

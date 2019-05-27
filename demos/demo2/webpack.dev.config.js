@@ -1,6 +1,6 @@
 var path = require('path')
 var webpack = require('webpack')
-
+var path = require('path')
 module.exports = {
 	devtool: 'eval',
 	entry: {
@@ -11,6 +11,11 @@ module.exports = {
 		path: path.join(__dirname, 'demo/static'),
 		filename: 'bundle.js',
 		publicPath: '/static/'
+	},
+	resolve:{
+		alias:{
+			 
+		}
 	},
 	plugins: [
 		// ignore dev config
@@ -40,7 +45,7 @@ module.exports = {
 		loaders: [
 			{ test: /\.css/, loader: 'style!css' },
             { test: /\.less$/, loader: 'style!css!less' },
-            { test: /\.(js|jsx)$/, loaders: [ 'babel'], exclude: /node_modules/, include: __dirname },
+            { test: /\.(js|jsx)$/, loaders: [ 'babel'], exclude: /node_modules/},
             { test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff' },
             { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream' },
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file' },

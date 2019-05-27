@@ -1,53 +1,48 @@
-/* import para from './images/para.png'
-import fwql from './images/fwql.png'
-import jcfwl from './images/jcfwl.png'
-import xnpzx from './images/xnpzx.png'
-import wljhj from './images/wljhj.png'
-import zydd from './images/zydd.png' */
-import cloudImage from './images/cloud_bk.png'
-import starRender from './nodes/star'
-import squareRender from './nodes/square'
-import imageRender from './nodes/imageBk'
-import alertRender from './nodes/alertBox'
-import lineRender from './nodes/line'
-import bubbleRender from './nodes/bubbleNode'
-import pathNodeRender from './nodes/pathNode'
-
-import unitRender from './nodes/unit'
-
-import arrow1Render from './arrows/dashArrow'
-import rightAngleArrowRender from './arrows/rightAngleArrow'
 
 
+import starRender from '../../src/nodes/star'
+import squareRender from '../../src/nodes/square'
+import imageRender from '../../src/nodes/imageBk'
+import alertRender from '../../src/nodes/alertBox'
+import lineRender from '../../src/nodes/line'
+import bubbleRender from '../../src/nodes/bubbleNode'
+import pathNodeRender from '../../src/nodes/pathNode'
 
-import warnIcon from './images/告警icon.png'
-import shIcon from './images/shanghai_bk.png'
-import bjIcon from './images/bj_bk.png'
-import myIcon from './images/my_bk.png'
-import normalBk from './images/square-normal.png'
-import warnBk from './images/红色框.png'
-import unitBk from './images/unit_bk.png'
+import unitRender from '../../src/nodes/unit'
 
-import ruqinNode from './images/ruqin_node.png'
-import safeNode from './images/safe_node.png'
-import serverNode from './images/server_node.png'
-import jiaohuanNode from './images/jiaohuaji.png'
-import wangguanNode from './images/switches_node.png'
-import unit1Node from './images/unit_node.png'
-import unit2Node from './images/unit_node2.png'
-import virusNode from './images/virus_node.png'
-import wallNode from './images/wall_node.png'
+import arrow1Render from '../../src/arrows/dashArrow'
+import rightAngleArrowRender from '../../src/arrows/rightAngleArrow'
 
 
-import blueNode from './images/blueNode.png'
-import redNode from './images/redNode.png'
-import yellowNode from './images/yellowNode.png'
-import greenNode from './images/greenNode.png'
+import cloudImage from '../../src/images/cloud_bk.png'
+import warnIcon from '../../src/images/告警icon.png'
+import shIcon from '../../src/images/shanghai_bk.png'
+import bjIcon from '../../src/images/bj_bk.png'
+import myIcon from '../../src/images/my_bk.png'
+import normalBk from '../../src/images/square-normal.png'
+import warnBk from '../../src/images/红色框.png'
+import unitBk from '../../src/images/unit_bk.png'
 
-import blueSquare from './images/blueSquare.png'
-import greenSquare from './images/greenSquare.png'
-import redSquare from './images/redSquare.png'
-import yellowSquare from './images/yellowSquare.png'
+import ruqinNode from '../../src/images/ruqin_node.png'
+import safeNode from '../../src/images/safe_node.png'
+import serverNode from '../../src/images/server_node.png'
+import jiaohuanNode from '../../src/images/jiaohuaji.png'
+import wangguanNode from '../../src/images/switches_node.png'
+import unit1Node from '../../src/images/unit_node.png'
+import unit2Node from '../../src/images/unit_node2.png'
+import virusNode from '../../src/images/virus_node.png'
+import wallNode from '../../src/images/wall_node.png'
+
+
+import blueNode from '../../src/images/blueNode.png'
+import redNode from '../../src/images/redNode.png'
+import yellowNode from '../../src/images/yellowNode.png'
+import greenNode from '../../src/images/greenNode.png'
+
+import blueSquare from '../../src/images/blueSquare.png'
+import greenSquare from '../../src/images/greenSquare.png'
+import redSquare from '../../src/images/redSquare.png'
+import yellowSquare from '../../src/images/yellowSquare.png'
 
 export const ARROW_TYPES = [
     {key:"normal", title:"直线",arrow:false},
@@ -148,10 +143,9 @@ export const NODE_TYPES = {/*
 
 
 export const MENU_TYPES = [
-    {
+    /* {
         key:"addGroup-group1", title:"新建组", targets:{node:false,rootGroup:true,container:false}
-    },
-    /* {key:"addNode", title:"新建节点", targets:{node:false,rootGroup:true,container:true},
+    },  {key:"addNode", title:"新建节点", targets:{node:false,rootGroup:true,container:true},
         childs:Object.keys(NODE_TYPES).map((key)=>{
             let node =NODE_TYPES[key]
             return {
@@ -160,7 +154,7 @@ export const MENU_TYPES = [
             }
         })
     }, */
-    {key:"addNode",title:"公共节点",targets:{node:false,rootGroup:true,container:true},
+    {key:"addNode",title:"气泡",targets:{node:false,rootGroup:true,container:true},
         childs:[
             {key:'bubbleYellow',title:'黄色气泡'},
             {key:'bubbleGreen',title:'绿色气泡'},
@@ -169,16 +163,16 @@ export const MENU_TYPES = [
             {key:'pathNode',title:'白色图标'}
         ]
     },
-    {key:"addNode",title:"大屏一",targets:{node:false,rootGroup:true,container:true},
+    {key:"addNode",title:"节点",targets:{node:false,rootGroup:true,container:true},
         childs:[
-            {key:'beijing',title:'北京'},
-            {key:'shanghai',title:'上海'},
-            {key:'mianyang',title:'绵阳'},
+            {key:'beijing',title:'区域一'},
+            {key:'shanghai',title:'区域二'},
+            {key:'mianyang',title:'区域三'},
             {key:'safeStar',title:'单位'},
-            {key:'safeSquare',title:'数据中心'},
+            {key:'safeSquare',title:'信号中心'},
             {key:'helpLine',title:'辅助线'}
         ]
-    },
+    },/* 
     {key:"addNode",title:"大屏三",targets:{node:false,rootGroup:true,container:true},
         childs:[
             {key:'unitNode1',title:'单位节点一'},
@@ -195,7 +189,7 @@ export const MENU_TYPES = [
             
             
         ]
-    },
+    }, */
     {key:"addArrow", title:"连接", targets:{node:true,rootGroup:false,container:true},
         childs:ARROW_TYPES.map((node)=>{
             return {

@@ -1,9 +1,9 @@
-import json1 from './demo1_json'
+/* import json1 from './demo1_json'
 import json2 from './demo2_json'
 import json3 from './demo3_json'
 import json4 from './demo4_json'
 import json5 from './demo5_json'
-
+ */
 
 let $tapu
 function render(el,options) {
@@ -118,7 +118,7 @@ function render(el,options) {
         ]   
     ]
     let ftypes = ['normal','star','path','fire']
-    el.querySelector('select.demos').addEventListener('change',(e)=>{
+    /* el.querySelector('select.demos').addEventListener('change',(e)=>{
         window.clearTimeout(timer)
         timer = null
         switch(e.target.value){
@@ -152,7 +152,7 @@ function render(el,options) {
             ;break;
             
         }
-    })
+    }) */
 
      
     el.querySelector('.toggle-btn').addEventListener('click',()=>{
